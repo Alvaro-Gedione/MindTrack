@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindTrack - Login</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* 1. VARIÁVEIS DE ESTILO E CONFIGURAÇÕES GLOBAIS (extraídas das páginas existentes) */
+        :root {
+            --bg-main: #F9FAFB;
+            --bg-widget: #FFFFFF;
+            --primary-gradient: linear-gradient(180deg, #2EC4B6 0%, #018B8B 100%);
+            --primary-accent: #2EC4B6;
+            --primary-accent-light: #E0F2F1;
+            --text-dark: #374151;
+            --text-light: #F9FAFB;
+            --text-muted: #9CA3AF;
+            --border-color: #E5E7EB;
+            --font-title: 'Montserrat', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* 2. LAYOUT PRINCIPAL DA PÁGINA DE LOGIN */
+        .login-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Painel Esquerdo (Branding) */
+        .login-branding {
+            flex-basis: 45%;
+            background: var(--primary-gradient);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .logo {
+            font-family: var(--font-title);
+            font-size: 36px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .login-branding h1 {
+            font-family: var(--font-title);
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 16px;
+            max-width: 400px;
+        }
+
+        .login-branding p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 400px;
+        }
+
+        /* Painel Direito (Formulário) */
+        .login-form-area {
+            flex-basis: 55%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-card h2 {
+            font-family: var(--font-title);
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .login-card .subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        /* 3. ESTILOS DO FORMULÁRIO (baseado em ConfiguracoesColaborador.html) */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px var(--primary-accent-light);
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+        .form-options .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .form-options a {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary-accent);
+            text-decoration: none;
+        }
+        
+        .form-options a:hover {
+            text-decoration: underline;
+        }
+
+        /* Botão Principal */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: var(--primary-accent);
+            color: #fff;
+        }
+
+        .btn-submit:hover {
+            background-color: #28a79b; /* Um tom ligeiramente mais escuro para o hover */
+            box-shadow: var(--shadow-soft);
+        }
+
+        /* Link de Cadastro */
+        .signup-link {
+            text-align: center;
+            margin-top: 32px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .signup-link a {
+            color: var(--primary-accent);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 4. AJUSTES PARA TELAS MENORES (Responsividade) */
+        @media (max-width: 768px) {
+            .login-branding {
+                display: none; /* Oculta o painel de branding em telas pequenas */
+            }
+            .login-form-area {
+                flex-basis: 100%;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-branding">
+            <div class="logo">
+                <i class="fa-solid fa-leaf"></i>
+                <span>MindTrack</span>
+            </div>
+            <h1>Cuide do seu bem-estar, um dia de cada vez.</h1>
+            <p>Conecte-se com suas emoções e cultive uma mente mais saudável e produtiva no seu ambiente de trabalho.</p>
+        </div>
+
+        <div class="login-form-area">
+            <div class="login-card">
+                <h2>Bem-vindo(a) de volta!</h2>
+                <p class="subtitle">Acesse sua conta para continuar sua jornada.</p>
+
+                <form action="./Jornada.html">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="seu.email@empresa.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Senha</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="remember-me">
+                            <label for="remember-me">Lembrar de mim</label>
+                        </div>
+                        <a href="#">Esqueci minha senha</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Entrar</button>
+                </form>
+
+                <p class="signup-link">
+                    Ainda não tem uma conta? <a href="./Cadastro.html">Cadastre-se</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

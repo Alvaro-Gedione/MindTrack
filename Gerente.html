@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindTrack - Painel de Bem-Estar Zen</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* --- 1. CONFIGURAÇÕES GLOBAIS E NOVA PALETA DE CORES --- */
+        :root {
+            --bg-main: #F9FAFB; /* Fundo mais suave */
+            --bg-widget: #FFFFFF;
+            --primary-gradient: linear-gradient(180deg, #2EC4B6 0%, #018B8B 100%);
+            --primary-accent: #2EC4B6;
+            --secondary-accent: #8E7AB5; /* Um toque de lavanda */
+            
+            --text-dark: #374151; /* Cinza escuro ao invés de preto */
+            --text-light: #F9FAFB;
+            --text-muted: #9CA3AF;
+            --border-color: #E5E7EB;
+            
+            --color-positive: #34D399; /* Verde mais vibrante e amigável */
+            --color-neutral: #FBBF24;
+            --color-negative: #FB923C; /* Laranja mais suave */
+            
+            --font-title: 'Montserrat', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            
+            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07);
+        }
+
+        /* --- ANIMAÇÕES --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes drawPath {
+            from { stroke-dashoffset: 1000; }
+            to { stroke-dashoffset: 0; }
+        }
+        
+        @keyframes fillDonut {
+             from { stroke-dashoffset: 565; } /* Perímetro de um círculo com raio 90 */
+             to { stroke-dashoffset: calc(565 - (565 * 0.55)); } /* 55% preenchido */
+        }
+        
+        @keyframes countUp {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- 2. LAYOUT PRINCIPAL: MENU E CONTEÚDO --- */
+        .sidebar {
+            width: 260px;
+            background: var(--primary-gradient);
+            color: var(--text-light);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        /* --- 3. ESTILOS DO MENU LATERAL (SIDEBAR) --- */
+        .sidebar-header {
+            font-family: var(--font-title);
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-header i {
+            transform: scale(1.1);
+        }
+
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav li { margin-bottom: 8px; }
+        .sidebar-nav a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .sidebar-nav a i {
+            width: 22px;
+            margin-right: 16px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        .sidebar-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .sidebar-nav a.active {
+            background-color: #fff;
+            color: var(--primary-accent);
+            font-weight: 600;
+            box-shadow: var(--shadow-soft);
+        }
+        .sidebar-nav .alert-count {
+            margin-left: auto;
+            background-color: var(--secondary-accent);
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .user-profile {
+            margin-top: auto;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .user-profile p:first-child { font-weight: 600; }
+        .user-profile p:last-child { color: rgba(255, 255, 255, 0.7); }
+
+        /* --- 4. ESTILOS DO CONTEÚDO PRINCIPAL --- */
+        .page-header {
+            margin-bottom: 32px;
+        }
+        .page-header h1 {
+            font-family: var(--font-title);
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .page-header p {
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+        
+        .widget {
+            background-color: var(--bg-widget);
+            padding: 28px;
+            border-radius: 20px; /* Bordas mais arredondadas */
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0; /* Começa invisível para animação */
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        .widget:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-medium);
+        }
+        .widget-title {
+            font-family: var(--font-title);
+            font-size: 20px;
+            margin-bottom: 24px;
+        }
+
+        /* Animação em cascata para os widgets */
+        .dashboard-grid > .widget:nth-child(1) { animation-delay: 0.1s; }
+        .dashboard-grid > .widget:nth-child(2) { animation-delay: 0.2s; }
+        .dashboard-grid > .widget:nth-child(3) { animation-delay: 0.3s; }
+        .dashboard-grid > .widget:nth-child(4) { animation-delay: 0.4s; }
+        .dashboard-grid > .widget:nth-child(5) { animation-delay: 0.5s; }
+        .dashboard-grid > .widget:nth-child(6) { animation-delay: 0.6s; }
+        .dashboard-grid > .widget:nth-child(7) { animation-delay: 0.7s; }
+        .dashboard-grid > .widget:nth-child(8) { animation-delay: 0.8s; }
+
+
+        .dashboard-grid {
+            display: grid;
+            gap: 28px;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        /* --- 5. COMPONENTES ESPECÍFICOS --- */
+        .kpi-card {
+            grid-column: span 1;
+        }
+        .kpi-value {
+            font-family: var(--font-title);
+            font-size: 40px;
+            font-weight: 700;
+            animation: countUp 0.6s ease-out;
+        }
+        .kpi-value small { font-size: 0.5em; color: var(--text-muted); }
+        .kpi-label {
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .kpi-trend {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+        .kpi-trend.positive { color: var(--color-positive); }
+        .kpi-trend.negative { color: var(--color-negative); }
+
+        /* Gráfico de Linhas (com animação) */
+        .line-chart-widget {
+            grid-column: span 3;
+            height: 380px;
+        }
+        .line-chart-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawPath 2s ease-out forwards;
+        }
+        .line-chart-path.delay-1 { animation-delay: 0.5s; }
+        .line-chart-path.delay-2 { animation-delay: 0.8s; }
+
+        /* Gráfico de Rosca (com SVG para animação) */
+        .donut-chart-widget {
+            grid-column: span 1;
+            height: 380px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .donut-svg-wrapper {
+            position: relative;
+            margin-top: 20px;
+        }
+        .donut-svg {
+            width: 200px;
+            height: 200px;
+            transform: rotate(-90deg);
+        }
+        .donut-bg, .donut-fg {
+            fill: none;
+            stroke-width: 25;
+        }
+        .donut-bg { stroke: var(--border-color); }
+        .donut-fg {
+            stroke: var(--color-positive);
+            stroke-linecap: round;
+            stroke-dasharray: 565; /* 2 * pi * 90 */
+            stroke-dashoffset: 565;
+            animation: fillDonut 1.5s ease-out forwards 1s;
+        }
+        .donut-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-family: var(--font-title);
+        }
+        .donut-value { font-size: 36px; font-weight: 700; }
+        .donut-label { font-size: 14px; color: var(--text-muted); }
+
+        /* Mapa de Calor */
+        .heatmap-widget {
+            grid-column: span 2;
+        }
+        .heatmap-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        .heatmap-table th, .heatmap-table td { padding: 14px; }
+        .heatmap-table th { font-weight: 600; color: var(--text-muted); }
+        .heatmap-table td:not(:first-child) {
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .heat-low { background-color: #ECFDF5; color: #10B981; }
+        .heat-medium { background-color: #FFFBEB; color: #F59E0B; }
+        .heat-high { background-color: #FFF7ED; color: #F97316; }
+
+        /* Feed de Alertas */
+        .alerts-widget { grid-column: span 2; }
+        .alerts-list { list-style: none; }
+        .alerts-list li {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .alerts-list li:last-child { border-bottom: none; }
+        .alert-icon {
+            margin-right: 16px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+        .alert-icon.negative { color: var(--color-negative); }
+        .alert-icon.positive { color: var(--color-positive); }
+        .alert-text { flex-grow: 1; }
+        .alert-time { font-size: 14px; color: var(--text-muted); white-space: nowrap; margin-left: 16px; }
+
+    </style>
+</head>
+<body>
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Painel de Bem-Estar</h1>
+            <p>Uma visão geral da saúde mental da sua equipe nos últimos 30 dias.</p>
+        </header>
+
+        <div class="dashboard-grid">
+            
+            <div class="widget kpi-card">
+                <div class="kpi-label">Índice de Bem-Estar</div>
+                <div class="kpi-value">7.8<small>/10</small></div>
+                <div class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> 5% vs. mês anterior</div>
+            </div>
+            <div class="widget kpi-card">
+                <div class="kpi-label">Taxa de Adesão</div>
+                <div class="kpi-value">82<small>%</small></div>
+                <div class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> 2% vs. mês anterior</div>
+            </div>
+            <div class="widget kpi-card">
+                <div class="kpi-label">Média de Estresse</div>
+                <div class="kpi-value">Médio</div>
+                <div class="kpi-trend negative"><i class="fa-solid fa-arrow-up"></i> 8% vs. mês anterior</div>
+            </div>
+            <div class="widget kpi-card">
+                <div class="kpi-label">Alertas Ativos</div>
+                <div class="kpi-value">3</div>
+                <div class="kpi-trend">Requerem atenção</div>
+            </div>
+
+            <div class="widget line-chart-widget">
+                <h2 class="widget-title">Evolução do Bem-Estar, Humor e Energia</h2>
+                <svg width="100%" height="280" style="overflow: visible;">
+                    <line x1="40" y1="250" x2="98%" y2="250" stroke="#E5E7EB" stroke-width="2"/>
+                    <line x1="40" y1="250" x2="40" y2="20" stroke="#E5E7EB" stroke-width="2"/>
+                    <path class="line-chart-path" d="M 40 100 Q 150 50, 250 110 T 450 90 T 650 60" stroke="var(--color-positive)" fill="none" stroke-width="4" stroke-linecap="round"/>
+                    <path class="line-chart-path delay-1" d="M 40 150 Q 150 120, 250 160 T 450 140 T 650 110" stroke="var(--primary-accent)" fill="none" stroke-width="4" stroke-linecap="round"/>
+                    <path class="line-chart-path delay-2" d="M 40 180 Q 150 200, 250 170 T 450 190 T 650 210" stroke="var(--color-negative)" fill="none" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <div class="widget donut-chart-widget">
+                <h2 class="widget-title">Humor Geral</h2>
+                <div class="donut-svg-wrapper">
+                    <svg class="donut-svg" viewBox="0 0 200 200">
+                        <circle class="donut-bg" r="90" cx="100" cy="100" />
+                        <circle class="donut-fg" r="90" cx="100" cy="100" />
+                    </svg>
+                    <div class="donut-center-text">
+                        <div class="donut-value">55%</div>
+                        <div class="donut-label">Positivo</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget heatmap-widget">
+                <h2 class="widget-title">Pontos de Atenção por Departamento</h2>
+                <table class="heatmap-table">
+                    <thead>
+                        <tr><th>Departamento</th><th>Estresse</th><th>Energia</th><th>Humor</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Vendas</strong></td><td class="heat-high">Alto</td><td class="heat-medium">Médio</td><td class="heat-medium">Neutro</td></tr>
+                        <tr><td><strong>TI</strong></td><td class="heat-medium">Moderado</td><td class="heat-low">Bom</td><td class="heat-low">Positivo</td></tr>
+                        <tr><td><strong>Marketing</strong></td><td class="heat-high">Alto</td><td class="heat-low">Bom</td><td class="heat-medium">Neutro</td></tr>
+                        <tr><td><strong>RH</strong></td><td class="heat-low">Baixo</td><td class="heat-low">Bom</td><td class="heat-low">Positivo</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="widget alerts-widget">
+                <h2 class="widget-title">Últimos Alertas Gerados</h2>
+                <ul class="alerts-list">
+                    <li>
+                        <i class="fa-solid fa-triangle-exclamation alert-icon negative"></i>
+                        <span class="alert-text">Aumento de estresse em <strong>Vendas</strong>.</span>
+                        <span class="alert-time">Há 2 dias</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-triangle-exclamation alert-icon negative"></i>
+                        <span class="alert-text">Aumento de estresse em <strong>Marketing</strong>.</span>
+                        <span class="alert-time">Há 3 dias</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-arrow-trend-up alert-icon positive"></i>
+                        <span class="alert-text">Índice de sono da empresa melhorou.</span>
+                        <span class="alert-time">Há 5 dias</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </main>
+    <script src="sidebar.js"></script>
+</body>
+</html>

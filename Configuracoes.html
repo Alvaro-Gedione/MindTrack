@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindTrack - Configurações</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* --- 1. CONFIGURAÇÕES GLOBAIS E PALETA DE CORES --- */
+        :root {
+            --bg-main: #F9FAFB;
+            --bg-widget: #FFFFFF;
+            --primary-gradient: linear-gradient(180deg, #2EC4B6 0%, #018B8B 100%);
+            --primary-accent: #2EC4B6;
+            --primary-accent-light: #E0F2F1;
+            --secondary-accent: #8E7AB5;
+            --text-dark: #374151;
+            --text-light: #F9FAFB;
+            --text-muted: #9CA3AF;
+            --border-color: #E5E7EB;
+            --color-positive: #34D399;
+            --color-neutral: #FBBF24;
+            --color-negative: #FB923C;
+            --color-danger: #F43F5E;
+            --color-danger-light: #FFE4E6;
+            --font-title: 'Montserrat', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- 2. LAYOUT PRINCIPAL: MENU E CONTEÚDO --- */
+        .sidebar {
+            width: 260px;
+            background: var(--primary-gradient);
+            color: var(--text-light);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        /* --- 3. ESTILOS DO MENU LATERAL (SIDEBAR) --- */
+        .sidebar-header {
+            font-family: var(--font-title);
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-nav a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-nav a i {
+            width: 22px;
+            margin-right: 16px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .sidebar-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .sidebar-nav a.active {
+            background-color: #fff;
+            color: var(--primary-accent);
+            font-weight: 600;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .user-profile {
+            margin-top: auto;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .user-profile p:first-child {
+            font-weight: 600;
+        }
+
+        .user-profile p:last-child {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+
+        /* --- 4. ESTILOS DO CONTEÚDO PRINCIPAL --- */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-title);
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        .btn {
+            padding: 10px 18px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #28a79b;
+        }
+
+        .btn-danger-outline {
+            background: none;
+            border: 1px solid var(--color-danger);
+            color: var(--color-danger);
+        }
+
+        .btn-danger-outline:hover {
+            background-color: var(--color-danger-light);
+            color: #be123c;
+        }
+
+        /* --- 5. TELA DE CONFIGURAÇÕES (ESTILOS PRINCIPAIS) --- */
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .settings-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .settings-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        .settings-nav a:hover {
+            background-color: var(--border-color);
+        }
+
+        .settings-nav a.active {
+            background-color: var(--primary-accent-light);
+            color: var(--primary-accent);
+            font-weight: 600;
+        }
+
+        .settings-nav a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .settings-card {
+            background-color: var(--bg-widget);
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        /* NOVO: Esconde as abas de conteúdo por padrão */
+        .settings-tab-content {
+            display: none;
+        }
+
+        /* NOVO: Mostra apenas a aba de conteúdo que estiver ativa */
+        .settings-tab-content.active {
+            display: block;
+        }
+
+        .settings-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-card-header h3 {
+            font-family: var(--font-title);
+            font-size: 18px;
+        }
+
+        .settings-card-header p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .settings-card-body {
+            padding: 24px;
+        }
+
+        .settings-card-footer {
+            padding: 16px 24px;
+            background-color: var(--bg-main);
+            border-top: 1px solid var(--border-color);
+            text-align: right;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="password"]:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px var(--primary-accent-light);
+        }
+
+        /* --- 6. NOVOS COMPONENTES PARA CONFIGURAÇÕES DO COLABORADOR --- */
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .notification-item:first-child {
+            padding-top: 0;
+        }
+
+        .notification-item-text p {
+            font-weight: 500;
+        }
+
+        .notification-item-text span {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary-accent);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(22px);
+        }
+
+        .danger-zone {
+            border: 1px solid var(--color-danger-light);
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+
+        .danger-zone .settings-card-header {
+            background-color: var(--color-danger-light);
+            border-bottom: 1px solid #fecdd3;
+        }
+
+        .danger-zone .settings-card-header h3 {
+            color: #be123c;
+        }
+
+        .danger-zone .settings-card-body {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        /* --- NOVO: ESTILOS PARA O DROPDOWN/PASTA --- */
+        .dropdown-toggle {
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .dropdown-toggle .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+            padding-left: 10px;
+            list-style: none;
+            margin: 0;
+        }
+
+        .nav-item-dropdown.open>.dropdown-menu {
+            max-height: 500px;
+            margin-top: 8px;
+        }
+
+        .nav-item-dropdown.open>.dropdown-toggle .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu a {
+            padding-left: 28px;
+            /* Indentação dos sub-itens */
+        }
+
+        .departments-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .departments-table th,
+        .departments-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .departments-table th {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .departments-table td {
+            font-weight: 500;
+        }
+
+        .departments-table .actions {
+            text-align: right;
+        }
+
+        .departments-table .actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .departments-table .actions button i {
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        .departments-table .actions button:hover i {
+            color: var(--text-dark);
+        }
+
+        .departments-table .actions .btn-remove:hover i {
+            color: var(--color-danger);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Configurações</h1>
+            <p>Gerencie suas preferências pessoais, notificações e segurança da sua conta.</p>
+        </header>
+
+        <div class="settings-layout">
+            <nav class="settings-nav">
+                <a href="#" class="active" data-target="perfil"><i class="fa-solid fa-user-cog"></i> Meu Perfil</a>
+                <a href="#" data-target="notificacoes"><i class="fa-solid fa-bell"></i> Notificações</a>
+                <a href="#" data-target="seguranca"><i class="fa-solid fa-shield-halved"></i> Privacidade e
+                    Segurança</a>
+                <a href="#" data-target="ajuda"><i class="fa-solid fa-life-ring"></i> Ajuda e Suporte</a>
+
+                <div class="nav-item-dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <span><i class="fa-solid fa-building-shield"></i> Gestão da Empresa</span>
+                        <i class="fa-solid fa-chevron-down chevron-icon"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="nav-link" data-target="gestao-deptos"><i class="fa-solid fa-sitemap"></i>
+                                Departamentos</a></li>
+                        <li><a href="#" class="nav-link" data-target="gestao-acessos"><i class="fa-solid fa-key"></i>
+                                Códigos de Acesso</a></li>
+                        <li><a href="#" class="nav-link" data-target="gestao-assinatura"><i
+                                    class="fa-solid fa-wallet"></i> Assinatura</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="settings-content">
+                <div id="perfil" class="settings-tab-content active">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3>Informações Pessoais</h3>
+                            <p>Estes dados são visíveis apenas para você.</p>
+                        </div>
+                        <form>
+                            <div class="settings-card-body">
+                                <div class="form-group">
+                                    <label for="user-name">Nome Completo</label>
+                                    <input type="text" id="user-name" value="Anastácia Disney">
+                                </div>
+                                <div class="form-group">
+                                    <label for="user-role">Seu Cargo</label>
+                                    <input type="text" id="user-role" value="Analista de Vendas">
+                                </div>
+                            </div>
+                            <div class="settings-card-footer">
+                                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="notificacoes" class="settings-tab-content">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3>Preferências de Notificação</h3>
+                            <p>Escolha como e quando quer ser notificado.</p>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="notification-item">
+                                <div class="notification-item-text">
+                                    <p>Lembrete de check-in diário</p>
+                                    <span>Enviaremos um lembrete no seu horário preferido.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-item-text">
+                                    <p>Sugestões de micro-ações</p>
+                                    <span>Receba dicas personalizadas durante o dia.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-item-text">
+                                    <p>Resumo semanal do seu bem-estar</p>
+                                    <span>Um relatório da sua jornada toda segunda-feira.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-item-text">
+                                    <p>Avisos sobre novas conquistas</p>
+                                    <span>Seja notificado quando desbloquear um novo marco.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="seguranca" class="settings-tab-content">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3>Segurança</h3>
+                            <p>Altere sua senha para manter sua conta segura.</p>
+                        </div>
+                        <form>
+                            <div class="settings-card-body">
+                                <div class="form-group">
+                                    <label for="current-password">Senha Atual</label>
+                                    <input type="password" id="current-password" placeholder="••••••••">
+                                </div>
+                                <div class="form-group">
+                                    <label for="new-password">Nova Senha</label>
+                                    <input type="password" id="new-password" placeholder="••••••••">
+                                </div>
+                            </div>
+                            <div class="settings-card-footer">
+                                <button type="submit" class="btn btn-primary">Alterar Senha</button>
+                            </div>
+                        </form>
+
+                        <div class="danger-zone">
+                            <div class="settings-card-header">
+                                <h3>Zona de Perigo</h3>
+                            </div>
+                            <div class="settings-card-body">
+                                <div>
+                                    <strong>Excluir conta</strong>
+                                    <p style="font-size: 14px; color: var(--text-muted); max-width: 400px;">Esta ação é
+                                        permanente e todos os seus dados de jornada e conquistas serão apagados. </p>
+                                </div>
+                                <button class="btn btn-danger-outline">Excluir Minha Conta</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ajuda" class="settings-tab-content">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3>Central de Ajuda</h3>
+                            <p>Encontre respostas para suas dúvidas ou entre em contato conosco.</p>
+                        </div>
+                        <div class="settings-card-body">
+                            <p>Nossa equipe de suporte está pronta para ajudar. Se você tiver qualquer problema ou
+                                dúvida, não hesite em nos contatar através do email
+                                <strong>suporte@mindtrack.com</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div id="gestao-deptos" class="settings-tab-content">
+                    <div class="settings-content">
+
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <h3>Adicionar Novo Departamento</h3>
+                            </div>
+                            <form>
+                                <div class="settings-card-body">
+                                    <div class="form-group">
+                                        <label for="dept-name">Nome do Departamento</label>
+                                        <input type="text" id="dept-name"
+                                            placeholder="Ex: Vendas, Tecnologia, Marketing...">
+                                    </div>
+                                </div>
+                                <div class="settings-card-footer">
+                                    <button type="submit" class="btn btn-primary">Adicionar Departamento</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <h3>Departamentos Atuais</h3>
+                                <p>Gerencie os departamentos existentes na sua empresa.</p>
+                            </div>
+                            <div class="settings-card-body" style="padding: 0;">
+                                <table class="departments-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome do Departamento</th>
+                                            <th>Colaboradores</th>
+                                            <th class="actions">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Vendas</strong></td>
+                                            <td>24</td>
+                                            <td class="actions">
+                                                <button title="Editar"><i class="fa-solid fa-pencil"></i></button>
+                                                <button title="Remover" class="btn-remove"><i
+                                                        class="fa-solid fa-trash-can"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Tecnologia da Informação</strong></td>
+                                            <td>18</td>
+                                            <td class="actions">
+                                                <button title="Editar"><i class="fa-solid fa-pencil"></i></button>
+                                                <button title="Remover" class="btn-remove"><i
+                                                        class="fa-solid fa-trash-can"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Marketing</strong></td>
+                                            <td>12</td>
+                                            <td class="actions">
+                                                <button title="Editar"><i class="fa-solid fa-pencil"></i></button>
+                                                <button title="Remover" class="btn-remove"><i
+                                                        class="fa-solid fa-trash-can"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Recursos Humanos</strong></td>
+                                            <td>8</td>
+                                            <td class="actions">
+                                                <button title="Editar"><i class="fa-solid fa-pencil"></i></button>
+                                                <button title="Remover" class="btn-remove"><i
+                                                        class="fa-solid fa-trash-can"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="sidebar.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Seleciona todos os links da navegação de configurações
+            const navLinks = document.querySelectorAll('.settings-nav a');
+            // Seleciona todos os painéis de conteúdo
+            const tabContents = document.querySelectorAll('.settings-tab-content');
+
+            // Adiciona um evento de clique a cada link da navegação
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (event) {
+                    // Impede o comportamento padrão do link (de navegar para "#")
+                    event.preventDefault();
+
+                    // Pega o ID do conteúdo alvo do atributo 'data-target' do link clicado
+                    const targetId = this.getAttribute('data-target');
+                    const targetContent = document.getElementById(targetId);
+
+                    // 1. Remove a classe 'active' de todos os links
+                    navLinks.forEach(navLink => {
+                        navLink.classList.remove('active');
+                    });
+
+                    // 2. Adiciona a classe 'active' apenas ao link que foi clicado
+                    this.classList.add('active');
+
+                    // 3. Esconde todos os painéis de conteúdo
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    // 4. Mostra apenas o painel de conteúdo correspondente ao link clicado
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

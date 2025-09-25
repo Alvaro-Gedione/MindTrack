@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindTrack - Minhas Conquistas</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-main: #F9FAFB;
+            --bg-widget: #FFFFFF;
+            --primary-gradient: linear-gradient(180deg, #2EC4B6 0%, #018B8B 100%);
+            --primary-accent: #2EC4B6;
+            --secondary-accent: #8E7AB5;
+            --text-dark: #374151;
+            --text-light: #F9FAFB;
+            --text-muted: #9CA3AF;
+            --border-color: #E5E7EB;
+            --color-positive: #34D399;
+            --color-neutral: #FBBF24;
+            --color-negative: #FB923C;
+            --font-title: 'Montserrat', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--primary-gradient);
+            color: var(--text-light);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            font-family: var(--font-title);
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-header i {
+            transform: scale(1.1);
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-nav a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .sidebar-nav a i {
+            width: 22px;
+            margin-right: 16px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .sidebar-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .sidebar-nav a.active {
+            background-color: #fff;
+            color: var(--primary-accent);
+            font-weight: 600;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .user-profile {
+            margin-top: auto;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .user-profile p:first-child {
+            font-weight: 600;
+        }
+
+        .user-profile p:last-child {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* --- ESTILOS ESPECÍFICOS DA TELA DE CONQUISTAS --- */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-title);
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .achievement-card {
+            background-color: var(--bg-widget);
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .achievement-card.locked {
+            filter: grayscale(100%);
+            opacity: 0.6;
+        }
+
+        .achievement-card .icon-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary-accent);
+            color: #fff;
+            font-size: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .achievement-card.locked .icon-container {
+            background-color: var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .achievement-card .title {
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .achievement-card .description {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .achievements-grid>.achievement-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .achievements-grid>.achievement-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .achievements-grid>.achievement-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .achievements-grid>.achievement-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .achievements-grid>.achievement-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .achievements-grid>.achievement-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Minhas Conquistas</h1>
+            <p>Continue sua jornada de bem-estar para desbloquear mais recompensas!</p>
+        </header>
+
+        <div class="achievements-grid">
+
+            <div class="achievement-card">
+                <div class="icon-container"><i class="fa-solid fa-star"></i></div>
+                <div class="title">Jornada Inicial</div>
+                <div class="description">Conclua seu primeiro check-in.</div>
+            </div>
+
+            <div class="achievement-card">
+                <div class="icon-container"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="title">Semana de Ouro</div>
+                <div class="description">Faça check-in por 7 dias seguidos.</div>
+            </div>
+
+            <div class="achievement-card">
+                <div class="icon-container"><i class="fa-solid fa-brain"></i></div>
+                <div class="title">Mente Ativa</div>
+                <div class="description">Complete 5 sessões de foco.</div>
+            </div>
+
+            <div class="achievement-card locked">
+                <div class="icon-container"><i class="fa-solid fa-fire"></i></div>
+                <div class="title">Ajuste de Rota</div>
+                <div class="description">Identifique um aumento de estresse e complete uma ação de bem-estar.</div>
+            </div>
+
+            <div class="achievement-card locked">
+                <div class="icon-container"><i class="fa-solid fa-moon"></i></div>
+                <div class="title">A noite é uma Criança</div>
+                <div class="description">Faça check-in do sono por 10 dias seguidos.</div>
+            </div>
+
+            <div class="achievement-card locked">
+                <div class="icon-container"><i class="fa-solid fa-tree"></i></div>
+                <div class="title">Jardineiro Expert</div>
+                <div class="description">Desbloqueie todas as flores do seu jardim.</div>
+            </div>
+
+        </div>
+    </main>
+    <script src="sidebar.js"></script>
+</body>
+
+</html>

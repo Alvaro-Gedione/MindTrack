@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindTrack - Gestão de Colaboradores</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* --- 1. CONFIGURAÇÕES GLOBAIS E NOVA PALETA DE CORES --- */
+        :root {
+            --bg-main: #F9FAFB;
+            --bg-widget: #FFFFFF;
+            --primary-gradient: linear-gradient(180deg, #2EC4B6 0%, #018B8B 100%);
+            --primary-accent: #2EC4B6;
+            --secondary-accent: #8E7AB5;
+            --text-dark: #374151;
+            --text-light: #F9FAFB;
+            --text-muted: #9CA3AF;
+            --border-color: #E5E7EB;
+            --color-positive: #34D399;
+            --color-neutral: #FBBF24;
+            --color-negative: #FB923C;
+            --font-title: 'Montserrat', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07);
+        }
+
+        /* --- ANIMAÇÕES --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- ESTILOS DA SIDEBAR CORRIGIDOS --- */
+        .sidebar {
+            width: 260px;
+            background: var(--primary-gradient);
+            color: var(--text-light);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sidebar-header {
+            font-family: var(--font-title);
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-header i {
+            transform: scale(1.1);
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-nav a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-nav a i {
+            width: 22px;
+            margin-right: 16px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .sidebar-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .sidebar-nav a.active {
+            background-color: #fff;
+            color: var(--primary-accent);
+            font-weight: 600;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .alert-count {
+            margin-left: auto;
+            background-color: var(--secondary-accent);
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .user-profile {
+            margin-top: auto;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .user-profile p:first-child {
+            font-weight: 600;
+        }
+
+        .user-profile p:last-child {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* --- RESTANTE DOS ESTILOS --- */
+
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-title);
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #28a79b;
+        }
+
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+
+        .widget {
+            background-color: var(--bg-widget);
+            padding: 28px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .department-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .department-card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .department-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .department-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .department-card .card-header .title {
+            font-family: var(--font-title);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .department-card .card-header .label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .department-card .card-header .icon {
+            font-size: 24px;
+            color: var(--secondary-accent);
+        }
+
+        .department-card .card-stats {
+            display: flex;
+            gap: 24px;
+        }
+
+        .department-card .stat .value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .department-card .stat .label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .department-card .card-actions {
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--bg-widget);
+            border-radius: 20px;
+            padding: 32px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: var(--shadow-medium);
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            font-family: var(--font-title);
+            font-size: 22px;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .access-codes-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .access-codes-table th,
+        .access-codes-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .access-codes-table th {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge--active {
+            background-color: #ECFDF5;
+            color: #10B981;
+        }
+
+        .status-badge--pending {
+            background-color: #FFFBEB;
+            color: #F59E0B;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-content">
+        <header class="page-header">
+            <div>
+                <h1>Gestão de Acessos</h1>
+                <p style="font-size: 16px; color: var(--text-muted);">Gerencie departamentos e códigos de acesso
+                    anônimos.</p>
+            </div>
+            <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Adicionar Departamento</button>
+        </header>
+
+        <div class="department-grid">
+            <div class="department-card widget" style="animation-delay: 0.1s;">
+                <div class="card-header">
+                    <div>
+                        <div class="title">Departamento de Vendas</div>
+                        <p class="label">25 Colaboradores Ativos</p>
+                    </div>
+                    <i class="icon fa-solid fa-bullseye"></i>
+                </div>
+                <div class="card-stats">
+                    <div class="stat">
+                        <div class="value" style="color: var(--color-positive);">95%</div>
+                        <div class="label">Taxa de Adoção</div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-secondary">Ver Relatório</button>
+                    <button class="btn btn-primary" id="openSalesModalBtn">Gerenciar Acessos</button>
+                </div>
+            </div>
+
+            <div class="department-card widget" style="animation-delay: 0.2s;">
+                <div class="card-header">
+                    <div>
+                        <div class="title">Departamento de TI</div>
+                        <p class="label">18 Colaboradores Ativos</p>
+                    </div>
+                    <i class="icon fa-solid fa-laptop-code"></i>
+                </div>
+                <div class="card-stats">
+                    <div class="value" style="color: var(--color-positive);">100%</div>
+                    <div class="label">Taxa de Adoção</div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-secondary">Ver Relatório</button>
+                    <button class="btn btn-primary">Gerenciar Acessos</button>
+                </div>
+            </div>
+
+            <div class="department-card widget" style="animation-delay: 0.3s;">
+                <div class="card-header">
+                    <div>
+                        <div class="title">Departamento de Marketing</div>
+                        <p class="label">12 Colaboradores Ativos</p>
+                    </div>
+                    <i class="icon fa-solid fa-lightbulb"></i>
+                </div>
+                <div class="card-stats">
+                    <div class="value" style="color: var(--color-neutral);">80%</div>
+                    <div class="label">Taxa de Adoção</div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-secondary">Ver Relatório</button>
+                    <button class="btn btn-primary">Gerenciar Acessos</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="salesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Acessos - Depto. de Vendas</h2>
+                <button class="modal-close-btn" id="closeSalesModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="margin-bottom: 24px;">
+                <button class="btn btn-primary"><i class="fa-solid fa-key"></i> Gerar Novo Código de Acesso</button>
+            </div>
+            <table class="access-codes-table">
+                <thead>
+                    <tr>
+                        <th>Código de Acesso</th>
+                        <th>Status</th>
+                        <th>Data de Criação</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>MIND-TRK-SLS-8A4B</td>
+                        <td><span class="status-badge status-badge--active">Ativo</span></td>
+                        <td>15/07/2025</td>
+                        <td><button class="btn btn-secondary" style="color: var(--color-negative);">Desativar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>MIND-TRK-SLS-9C2D</td>
+                        <td><span class="status-badge status-badge--active">Ativo</span></td>
+                        <td>15/07/2025</td>
+                        <td><button class="btn btn-secondary" style="color: var(--color-negative);">Desativar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>MIND-TRK-SLS-E7F1</td>
+                        <td><span class="status-badge status-badge--pending">Pendente</span></td>
+                        <td>01/09/2025</td>
+                        <td><button class="btn btn-secondary" style="color: var(--color-negative);">Desativar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Seleciona os elementos do DOM
+        const salesModal = document.getElementById('salesModal');
+        const openBtn = document.getElementById('openSalesModalBtn');
+        const closeBtn = document.getElementById('closeSalesModalBtn');
+
+        // Função para abrir o modal
+        const openModal = () => {
+            salesModal.style.display = 'flex';
+        };
+
+        // Função para fechar o modal
+        const closeModal = () => {
+            salesModal.style.display = 'none';
+        };
+
+        // Adiciona os "escutadores" de eventos
+        openBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+
+        // Fecha o modal se o usuário clicar na área escura (fora do conteúdo)
+        window.addEventListener('click', (event) => {
+            if (event.target === salesModal) {
+                closeModal();
+            }
+        });
+    </script>
+    <script src="sidebar.js"></script>
+
+</body>
+
+</html>
