@@ -1,4 +1,4 @@
-const response = await fetch('https://script.google.com/macros/s/AKfycbxuq45DisIwQKMI3PUuH7vEpyq0xJu55v--IExsMfQytJ54Zw3JJyCLwHE5LgyW8XMbiw/exec?action=login', {
+const response = await fetch('https://script.google.com/macros/s/AKfycbycScdDY666D624_lBdXk5VHpjoYq1EKCN_FYKdFWGcTb0hB_q_mOrrHmAjx1yhvFVktQ/exec?action=login', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',

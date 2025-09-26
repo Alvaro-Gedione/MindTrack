@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MindTrack - Crie sua Conta</title>
+    <script src="config.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,23 +13,17 @@
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
     <style>
-        /* 1. VARIÁVEIS DE ESTILO E CONFIGURAÇÕES GLOBAIS */
         :root {
             --bg-main: #F9FAFB;
-            --bg-widget: #FFFFFF;
             --primary-gradient: linear-gradient(180deg, #2EC4B6 0%, #018B8B 100%);
             --primary-accent: #2EC4B6;
-            --primary-accent-light: #E0F2F1;
             --text-dark: #374151;
             --text-light: #F9FAFB;
             --text-muted: #9CA3AF;
             --border-color: #E5E7EB;
             --font-title: 'Montserrat', sans-serif;
             --font-body: 'Inter', sans-serif;
-            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07);
         }
 
         * {
@@ -42,18 +37,15 @@
             background-color: var(--bg-main);
             color: var(--text-dark);
             height: 100vh;
-            overflow: hidden;
             display: flex;
         }
 
-        /* 2. LAYOUT PRINCIPAL DA PÁGINA DE CADASTRO */
         .signup-container {
             display: flex;
             width: 100%;
             height: 100%;
         }
 
-        /* Painel Esquerdo (Branding) */
         .signup-branding {
             flex-basis: 45%;
             background: var(--primary-gradient);
@@ -91,14 +83,13 @@
             max-width: 400px;
         }
 
-        /* Painel Direito (Formulário) */
         .signup-form-area {
             flex-basis: 55%;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 40px;
-            overflow-y: auto; /* Permite rolagem se o formulário for grande */
+            overflow-y: auto;
         }
 
         .signup-card {
@@ -119,7 +110,6 @@
             margin-bottom: 32px;
         }
 
-        /* 3. ESTILOS DO FORMULÁRIO */
         .form-group {
             margin-bottom: 20px;
         }
@@ -131,61 +121,39 @@
             font-size: 14px;
         }
 
-        .form-group input,
-        .form-group select {
+        .form-group input {
             width: 100%;
             padding: 12px 14px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 16px;
             font-family: var(--font-body);
-            background-color: #fff;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .form-group input:focus,
-        .form-group select:focus {
+        .form-group input:focus {
             outline: none;
             border-color: var(--primary-accent);
-            box-shadow: 0 0 0 3px var(--primary-accent-light);
-        }
-        
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 16px;
-            background-color: #f9fafb;
-            padding: 12px;
-            border-radius: 8px;
+            box-shadow: 0 0 0 3px #E0F2F1;
         }
 
-        .hidden {
-            display: none;
-        }
-        
-        /* Botão Principal */
         .btn-submit {
             width: 100%;
             padding: 14px;
-            font-family: var(--font-body);
             font-size: 16px;
             font-weight: 600;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
             background-color: var(--primary-accent);
             color: #fff;
             margin-top: 24px;
         }
 
-        .btn-submit:hover {
-            background-color: #28a79b;
-            box-shadow: var(--shadow-soft);
+        .btn-submit:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
         }
 
-        /* Link de Login */
         .login-link {
             text-align: center;
             margin-top: 24px;
@@ -199,15 +167,11 @@
             text-decoration: none;
         }
 
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-        
-        /* 4. AJUSTES PARA TELAS MENORES (Responsividade) */
         @media (max-width: 768px) {
             .signup-branding {
                 display: none;
             }
+
             .signup-form-area {
                 flex-basis: 100%;
             }
@@ -218,109 +182,93 @@
 <body>
     <div class="signup-container">
         <div class="signup-branding">
-            <div class="logo">
-                <i class="fa-solid fa-leaf"></i>
-                <span>MindTrack</span>
-            </div>
+            <div class="logo"><i class="fa-solid fa-leaf"></i><span>MindTrack</span></div>
             <h1>Comece sua jornada para um bem-estar genuíno.</h1>
             <p>Uma plataforma desenhada para transformar dados em ações concretas que beneficiam você e sua empresa.</p>
         </div>
-
         <div class="signup-form-area">
             <div class="signup-card">
                 <h2>Crie sua Conta</h2>
                 <p class="subtitle">Preencha os campos para iniciar o monitoramento do seu bem-estar.</p>
-
-                <form action="./Jornada.html">
+                <form id="signup-form">
                     <div class="form-group">
                         <label for="nome">Nome Completo</label>
                         <input type="text" id="nome" placeholder="Seu nome completo" required>
                     </div>
-
-                    <div class="form-group">
-                        <label for="nascimento">Data de Nascimento</label>
-                        <input type="date" id="nascimento" required>
-                    </div>
-
                     <div class="form-group">
                         <label for="email">Email Corporativo</label>
                         <input type="email" id="email" placeholder="seu.email@empresa.com" required>
                     </div>
-
+                    <div class="form-group">
+                        <label for="departamento">Departamento</label>
+                        <input type="text" id="departamento" placeholder="Ex: Financeiro, TI, RH" required>
+                    </div>
                     <div class="form-group">
                         <label for="password">Crie uma Senha</label>
                         <input type="password" id="password" placeholder="Mínimo 8 caracteres" required>
                     </div>
-
-                    <div class="form-group">
-                        <label for="empresa">Empresa Associada</label>
-                        <select id="empresa" required>
-                            <option value="" disabled selected>Selecione sua empresa</option>
-                            <option value="tech-solutions">Tech Solutions</option>
-                            <option value="inova-corp">Inova Corp</option>
-                            <option value="nexus-digital">Nexus Digital</option>
-                            <option value="outra">Outra...</option>
-                        </select>
-                    </div>
-
-                    <div id="outra-empresa-fields" class="hidden">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="conta-individual">
-                            <label for="conta-individual">É uma conta individual?</label>
-                        </div>
-
-                        <div id="nova-empresa-container" class="form-group hidden" style="margin-top: 20px;">
-                            <label for="nova-empresa">Nome da Nova Empresa</label>
-                            <input type="text" id="nova-empresa" placeholder="Digite o nome da sua empresa">
-                        </div>
-                    </div>
-
                     <button type="submit" class="btn-submit">Criar Conta</button>
                 </form>
-
-                <p class="login-link">
-                    Já tem uma conta? <a href="./Login.html">Faça Login</a>
-                </p>
+                <p class="login-link">Já tem uma conta? <a href="./index.html">Faça Login</a></p>
             </div>
         </div>
     </div>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const empresaSelect = document.getElementById('empresa');
-            const outrosCampos = document.getElementById('outra-empresa-fields');
-            const contaIndividualCheckbox = document.getElementById('conta-individual');
-            const novaEmpresaContainer = document.getElementById('nova-empresa-container');
-            const novaEmpresaInput = document.getElementById('nova-empresa');
+        const signupForm = document.getElementById('signup-form');
+        const submitButton = signupForm.querySelector('.btn-submit');
 
-            empresaSelect.addEventListener('change', function() {
-                if (this.value === 'outra') {
-                    outrosCampos.classList.remove('hidden');
-                    // Por padrão, ao selecionar 'Outra', asumimos que não é individual
-                    contaIndividualCheckbox.checked = false;
-                    novaEmpresaContainer.classList.remove('hidden');
-                    novaEmpresaInput.required = true;
-                } else {
-                    outrosCampos.classList.add('hidden');
-                    novaEmpresaContainer.classList.add('hidden');
-                    novaEmpresaInput.required = false;
-                }
-            });
+        signupForm.addEventListener('submit', async function (e) {
+            e.preventDefault(); // Impede o envio padrão do formulário
 
-            contaIndividualCheckbox.addEventListener('change', function() {
-                if (this.checked) {
-                    // Se for conta individual, esconde o campo para nome da nova empresa
-                    novaEmpresaContainer.classList.add('hidden');
-                    novaEmpresaInput.required = false;
-                } else {
-                    // Se não for, mostra o campo
-                    novaEmpresaContainer.classList.remove('hidden');
-                    novaEmpresaInput.required = true;
-                }
-            });
+            // Desabilita o botão e atualiza o texto
+            submitButton.disabled = true;
+            submitButton.textContent = 'Enviando...';
+
+            // Coleta os dados do formulário simplificado
+            const userData = {
+                Nome: document.getElementById('nome').value,
+                Email: document.getElementById('email').value,
+                Senha: document.getElementById('password').value,
+                Departamento: document.getElementById('departamento').value,
+                Cargo: "Colaborador",
+                Nivel_Acesso: "Colaborador"
+            };
+
+            // Monta o payload final para a API
+            const payload = {
+                action: "postUsuario",
+                data: userData
+            };
+
+            try {
+                // Faz a requisição usando o método que funciona para você
+                await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        // O 'Content-Type' pode ser omitido ou 'text/plain' em 'no-cors',
+                        // mas o Apps Script geralmente consegue parsear mesmo assim.
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                    mode: 'no-cors' // <<< A CHAVE PARA EVITAR O ERRO DE CORS
+                });
+
+                // Como 'no-cors' não permite ler a resposta, assumimos o sucesso.
+                alert('Cadastro enviado com sucesso! Você será redirecionado.');
+                window.location.href = './index.html'; // Redireciona para o login
+
+            } catch (error) {
+                // Este 'catch' só será acionado por erros de rede.
+                console.error('Erro de rede ao tentar cadastrar:', error);
+                alert('Erro de conexão. Verifique sua internet e tente novamente.');
+
+                // Reabilita o botão em caso de falha de rede
+                submitButton.disabled = false;
+                submitButton.textContent = 'Criar Conta';
+            }
         });
     </script>
-
 </body>
 
 </html>

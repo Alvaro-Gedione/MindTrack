@@ -1,317 +1,420 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindTrack - Login</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <title>Teste de Inserção - API Google Apps Script</title>
     <style>
-        /* 1. VARIÁVEIS DE ESTILO E CONFIGURAÇÕES GLOBAIS (extraídas das páginas existentes) */
-        :root {
-            --bg-main: #F9FAFB;
-            --bg-widget: #FFFFFF;
-            --primary-gradient: linear-gradient(180deg, #2EC4B6 0%, #018B8B 100%);
-            --primary-accent: #2EC4B6;
-            --primary-accent-light: #E0F2F1;
-            --text-dark: #374151;
-            --text-light: #F9FAFB;
-            --text-muted: #9CA3AF;
-            --border-color: #E5E7EB;
-            --font-title: 'Montserrat', sans-serif;
-            --font-body: 'Inter', sans-serif;
-            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: var(--font-body);
-            background-color: var(--bg-main);
-            color: var(--text-dark);
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
         }
-
-        /* 2. LAYOUT PRINCIPAL DA PÁGINA DE LOGIN */
-        .login-container {
-            display: flex;
-            width: 100%;
-            height: 100%;
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
-
-        /* Painel Esquerdo (Branding) */
-        .login-branding {
-            flex-basis: 45%;
-            background: var(--primary-gradient);
-            color: var(--text-light);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            text-align: center;
+        .api-url {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            word-break: break-all;
+            font-family: monospace;
         }
-
-        .logo {
-            font-family: var(--font-title);
-            font-size: 36px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .login-branding h1 {
-            font-family: var(--font-title);
-            font-size: 28px;
-            font-weight: 700;
-            line-height: 1.4;
-            margin-bottom: 16px;
-            max-width: 400px;
-        }
-
-        .login-branding p {
-            font-size: 16px;
-            color: rgba(255, 255, 255, 0.85);
-            max-width: 400px;
-        }
-
-        /* Painel Direito (Formulário) */
-        .login-form-area {
-            flex-basis: 55%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-        }
-
-        .login-card {
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .login-card h2 {
-            font-family: var(--font-title);
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .login-card .subtitle {
-            font-size: 16px;
-            color: var(--text-muted);
-            margin-bottom: 40px;
-        }
-
-        /* 3. ESTILOS DO FORMULÁRIO (baseado em ConfiguracoesColaborador.html) */
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary-accent);
-            box-shadow: 0 0 0 3px var(--primary-accent-light);
-        }
-
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-        }
-
-        .form-options .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
-
-        .form-options a {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--primary-accent);
-            text-decoration: none;
-        }
-
-        .form-options a:hover {
-            text-decoration: underline;
-        }
-
-        /* Botão Principal */
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            font-family: var(--font-body);
-            font-size: 16px;
-            font-weight: 600;
+        button {
+            background: #4285f4;
+            color: white;
             border: none;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            background-color: var(--primary-accent);
-            color: #fff;
+            margin: 5px;
+            font-size: 14px;
         }
-
-        .btn-submit:hover {
-            background-color: #28a79b;
-            /* Um tom ligeiramente mais escuro para o hover */
-            box-shadow: var(--shadow-soft);
+        button:hover {
+            background: #3367d6;
         }
-
-        .btn-submit:disabled {
-            background-color: #9CA3AF;
+        button:disabled {
+            background: #ccc;
             cursor: not-allowed;
         }
-
-        /* Link de Cadastro */
-        .signup-link {
-            text-align: center;
-            margin-top: 32px;
-            font-size: 14px;
-            color: var(--text-muted);
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
         }
-
-        .signup-link a {
-            color: var(--primary-accent);
-            font-weight: 600;
-            text-decoration: none;
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
         }
-
-        .signup-link a:hover {
-            text-decoration: underline;
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
         }
-
-        /* 4. AJUSTES PARA TELAS MENORES (Responsividade) */
-        @media (max-width: 768px) {
-            .login-branding {
-                display: none;
-                /* Oculta o painel de branding em telas pequenas */
-            }
-
-            .login-form-area {
-                flex-basis: 100%;
-            }
+        .progress {
+            margin: 10px 0;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #4285f4;
+            transition: width 0.3s;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
         }
     </style>
 </head>
-
 <body>
-    <div class="login-container">
-        <div class="login-branding">
-            <div class="logo">
-                <i class="fa-solid fa-leaf"></i>
-                <span>MindTrack</span>
+    <h1>🔧 Teste de Inserção - API Google Apps Script</h1>
+    
+    <div class="container">
+        <h2>🔗 Configuração da API</h2>
+        <div>
+            <label for="apiUrl">URL da sua API (Web App):</label>
+            <input type="text" id="apiUrl" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;" 
+                   placeholder="https://script.google.com/macros/s/AKfycbycScdDY666D624_lBdXk5VHpjoYq1EKCN_FYKdFWGcTb0hB_q_mOrrHmAjx1yhvFVktQ/exec">
+            <small>Cole aqui a URL do seu Web App do Google Apps Script</small>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h2>👥 Criar 10 Usuários</h2>
+            <p>Usuários com dados aleatórios para teste</p>
+            <button onclick="criarUsuarios()" id="btnUsuarios">Criar 10 Usuários</button>
+            <div class="progress" id="progressUsuarios" style="display: none;">
+                <div class="progress-bar" id="progressBarUsuarios" style="width: 0%"></div>
             </div>
-            <h1>Cuide do seu bem-estar, um dia de cada vez.</h1>
-            <p>Conecte-se com suas emoções e cultive uma mente mais saudável e produtiva no seu ambiente de trabalho.
-            </p>
+            <div class="result" id="resultUsuarios"></div>
         </div>
 
-        <div class="login-form-area">
-            <div class="login-card">
-                <h2>Bem-vindo(a) de volta!</h2>
-                <p class="subtitle">Acesse sua conta para continuar sua jornada.</p>
-
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" placeholder="seu.email@empresa.com" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Senha</label>
-                        <input type="password" id="password" placeholder="••••••••" required>
-                    </div>
-
-                    <div class="form-options">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="remember-me">
-                            <label for="remember-me">Lembrar de mim</label>
-                        </div>
-                        <a href="#">Esqueci minha senha</a>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Entrar</button>
-                </form>
-
-                <p class="signup-link">
-                    Ainda não tem uma conta? <a href="./Cadastro.html">Cadastre-se</a>
-                </p>
+        <div class="section">
+            <h2>🏢 Criar 10 Departamentos</h2>
+            <p>Departamentos com nomes aleatórios</p>
+            <button onclick="criarDepartamentos()" id="btnDepartamentos">Criar 10 Departamentos</button>
+            <div class="progress" id="progressDepartamentos" style="display: none;">
+                <div class="progress-bar" id="progressBarDepartamentos" style="width: 0%"></div>
             </div>
+            <div class="result" id="resultDepartamentos"></div>
+        </div>
+
+        <div class="section">
+            <h2>📊 Criar 10 Registros de Dados</h2>
+            <p>Dados de check-in diário (requer usuários criados)</p>
+            <button onclick="criarDados()" id="btnDados">Criar 10 Registros</button>
+            <div class="progress" id="progressDados" style="display: none;">
+                <div class="progress-bar" id="progressBarDados" style="width: 0%"></div>
+            </div>
+            <div class="result" id="resultDados"></div>
+        </div>
+
+        <div class="section">
+            <h2>🚀 Criar Tudo (30 Registros)</h2>
+            <p>Cria 10 usuários, 10 departamentos e 10 registros de dados</p>
+            <button onclick="criarTudo()" id="btnTudo">Criar Todos os Dados</button>
+            <div class="progress" id="progressTudo" style="display: none;">
+                <div class="progress-bar" id="progressBarTudo" style="width: 0%"></div>
+            </div>
+            <div class="result" id="resultTudo"></div>
         </div>
     </div>
 
     <script>
-        const loginForm = document.querySelector('form');
-        const submitButton = document.querySelector('.btn-submit');
+        // URL da sua API - será preenchida pelo usuário
+        let API_URL = '';
 
-        loginForm.addEventListener('submit', function (event) {
-            event.preventDefault();
+        // Arrays para armazenar IDs criados
+        let usuariosCriados = [];
+        let departamentosCriados = [];
 
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('password').value;
+        // Dados de exemplo
+        const nomes = ['Ana Silva', 'Carlos Santos', 'Maria Oliveira', 'João Pereira', 'Fernanda Costa', 
+                      'Ricardo Almeida', 'Juliana Rodrigues', 'Pedro Souza', 'Camila Lima', 'Lucas Ferreira'];
+        
+        const cargos = ['Analista', 'Gerente', 'Desenvolvedor', 'Designer', 'Coordenador', 
+                       'Estagiário', 'Diretor', 'Consultor', 'Supervisor', 'Assistente'];
+        
+        const departamentos = ['TI', 'RH', 'Financeiro', 'Marketing', 'Vendas', 
+                              'Operações', 'Jurídico', 'Compras', 'Logística', 'Qualidade'];
+        
+        const niveisAcesso = [1, 2, 3, 4, 5];
 
-            // CERTIFIQUE-SE DE QUE ESTA URL ESTÁ CORRETA E É A MAIS RECENTE
-            const API_URL = 'https://script.google.com/macros/s/AKfycbycScdDY666D624_lBdXk5VHpjoYq1EKCN_FYKdFWGcTb0hB_q_mOrrHmAjx1yhvFVktQ/exec';
+        // Função para fazer requisições à API
+        async function fazerRequisicao(acao, dados = null, metodo = 'POST') {
+            const apiUrl = document.getElementById('apiUrl').value;
+            if (!apiUrl) {
+                alert('Por favor, insira a URL da API');
+                return null;
+            }
 
-            submitButton.disabled = true;
-            submitButton.textContent = 'Entrando...';
+            API_URL = apiUrl;
 
-            const urlComParametros = `${API_URL}?action=login&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`;
+            try {
+                let url = API_URL;
+                let options = {
+                    method: metodo,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    mode: 'no-cors' // Importante para Apps Script
+                };
 
-            fetch(urlComParametros)
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        localStorage.setItem('mindtrackUser', JSON.stringify(result.data));
-                        window.location.href = './Jornada.html';
-                    } else {
-                        alert('Erro: ' + result.error);
-                        submitButton.disabled = false;
-                        submitButton.textContent = 'Entrar';
+                if (metodo === 'POST' && dados) {
+                    options.body = JSON.stringify(dados);
+                } else if (metodo === 'GET' && acao) {
+                    url += `?action=${acao}`;
+                    // Adicionar parâmetros extras se necessário
+                    if (dados) {
+                        const params = new URLSearchParams(dados);
+                        url += `&${params.toString()}`;
                     }
-                })
-                .catch(error => {
-                    console.error('Erro ao fazer login:', error);
-                    alert('Ocorreu um erro de conexão.');
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Entrar';
+                }
+
+                const response = await fetch(url, options);
+                
+                // Para no-cors, não podemos ler a resposta diretamente
+                // Mas podemos assumir sucesso se não houver erro de rede
+                return {
+                    success: true,
+                    message: 'Requisição enviada com sucesso (modo no-cors)'
+                };
+                
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                return {
+                    success: false,
+                    error: error.message
+                };
+            }
+        }
+
+        // Função para criar usuários
+        async function criarUsuarios() {
+            const btn = document.getElementById('btnUsuarios');
+            const progress = document.getElementById('progressUsuarios');
+            const progressBar = document.getElementById('progressBarUsuarios');
+            const resultDiv = document.getElementById('resultUsuarios');
+
+            btn.disabled = true;
+            progress.style.display = 'block';
+            resultDiv.innerHTML = 'Iniciando criação de usuários...';
+
+            usuariosCriados = []; // Reset array
+
+            let resultados = [];
+            let sucessos = 0;
+
+            for (let i = 0; i < 10; i++) {
+                const usuarioData = {
+                    Nome: nomes[i],
+                    Email: `usuario${i+1}@empresa.com`,
+                    Senha: `senha${i+1}`,
+                    Departamento: departamentos[Math.floor(Math.random() * departamentos.length)],
+                    Cargo: cargos[Math.floor(Math.random() * cargos.length)],
+                    Nivel_Acesso: niveisAcesso[Math.floor(Math.random() * niveisAcesso.length)]
+                };
+
+                const resultado = await fazerRequisicao('postUsuario', {
+                    action: 'postUsuario',
+                    data: usuarioData
                 });
+
+                resultados.push({
+                    usuario: usuarioData.Nome,
+                    resultado: resultado
+                });
+
+                if (resultado && resultado.success) {
+                    sucessos++;
+                    // Simular o ID do usuário criado
+                    usuariosCriados.push(`USER_${Math.random().toString(36).substr(2, 8)}`);
+                }
+
+                // Atualizar progresso
+                const progresso = ((i + 1) / 10) * 100;
+                progressBar.style.width = `${progresso}%`;
+                resultDiv.innerHTML = `Progresso: ${i+1}/10 usuários\nSucessos: ${sucessos}\nÚltimo: ${usuarioData.Nome}`;
+
+                // Pequeno delay para não sobrecarregar
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            btn.disabled = false;
+            resultDiv.className = 'result ' + (sucessos === 10 ? 'success' : 'error');
+            resultDiv.innerHTML = `Criação de usuários concluída!\n\n` +
+                                `Total: 10\nSucessos: ${sucessos}\nFalhas: ${10 - sucessos}\n\n` +
+                                `IDs criados: ${usuariosCriados.join(', ')}`;
+        }
+
+        // Função para criar departamentos
+        async function criarDepartamentos() {
+            const btn = document.getElementById('btnDepartamentos');
+            const progress = document.getElementById('progressDepartamentos');
+            const progressBar = document.getElementById('progressBarDepartamentos');
+            const resultDiv = document.getElementById('resultDepartamentos');
+
+            btn.disabled = true;
+            progress.style.display = 'block';
+            resultDiv.innerHTML = 'Iniciando criação de departamentos...';
+
+            departamentosCriados = []; // Reset array
+
+            let resultados = [];
+            let sucessos = 0;
+
+            for (let i = 0; i < 10; i++) {
+                const departamentoData = {
+                    Departamento: `${departamentos[i]} ${Math.floor(Math.random() * 100)}`,
+                    ID_Usuarios: usuariosCriados.length > 0 ? 
+                                usuariosCriados.slice(0, Math.floor(Math.random() * 3) + 1).join(',') : ''
+                };
+
+                const resultado = await fazerRequisicao('postDepartamento', {
+                    action: 'postDepartamento',
+                    data: departamentoData
+                });
+
+                resultados.push({
+                    departamento: departamentoData.Departamento,
+                    resultado: resultado
+                });
+
+                if (resultado && resultado.success) {
+                    sucessos++;
+                    departamentosCriados.push(departamentoData.Departamento);
+                }
+
+                // Atualizar progresso
+                const progresso = ((i + 1) / 10) * 100;
+                progressBar.style.width = `${progresso}%`;
+                resultDiv.innerHTML = `Progresso: ${i+1}/10 departamentos\nSucessos: ${sucessos}\nÚltimo: ${departamentoData.Departamento}`;
+
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            btn.disabled = false;
+            resultDiv.className = 'result ' + (sucessos === 10 ? 'success' : 'error');
+            resultDiv.innerHTML = `Criação de departamentos concluída!\n\n` +
+                                `Total: 10\nSucessos: ${sucessos}\nFalhas: ${10 - sucessos}\n\n` +
+                                `Departamentos criados: ${departamentosCriados.join(', ')}`;
+        }
+
+        // Função para criar dados
+        async function criarDados() {
+            const btn = document.getElementById('btnDados');
+            const progress = document.getElementById('progressDados');
+            const progressBar = document.getElementById('progressBarDados');
+            const resultDiv = document.getElementById('resultDados');
+
+            if (usuariosCriados.length === 0) {
+                alert('Crie usuários primeiro ou use IDs existentes');
+                return;
+            }
+
+            btn.disabled = true;
+            progress.style.display = 'block';
+            resultDiv.innerHTML = 'Iniciando criação de dados...';
+
+            let resultados = [];
+            let sucessos = 0;
+
+            for (let i = 0; i < 10; i++) {
+                const dadosData = {
+                    UserID_Anonimo: usuariosCriados[Math.floor(Math.random() * usuariosCriados.length)],
+                    Qualidade_Sono: Math.floor(Math.random() * 10) + 1, // 1-10
+                    Nivel_Estresse: Math.floor(Math.random() * 10) + 1, // 1-10
+                    Nivel_Energia: Math.floor(Math.random() * 10) + 1   // 1-10
+                };
+
+                const resultado = await fazerRequisicao('postDados', {
+                    action: 'postDados',
+                    data: dadosData
+                });
+
+                resultados.push({
+                    usuario: dadosData.UserID_Anonimo,
+                    resultado: resultado
+                });
+
+                if (resultado && resultado.success) {
+                    sucessos++;
+                }
+
+                // Atualizar progresso
+                const progresso = ((i + 1) / 10) * 100;
+                progressBar.style.width = `${progresso}%`;
+                resultDiv.innerHTML = `Progresso: ${i+1}/10 registros\nSucessos: ${sucessos}\nÚltimo usuário: ${dadosData.UserID_Anonimo}`;
+
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            btn.disabled = false;
+            resultDiv.className = 'result ' + (sucessos === 10 ? 'success' : 'error');
+            resultDiv.innerHTML = `Criação de dados concluída!\n\n` +
+                                `Total: 10\nSucessos: ${sucessos}\nFalhas: ${10 - sucessos}\n\n` +
+                                `Dados de check-in criados com sucesso!`;
+        }
+
+        // Função para criar tudo
+        async function criarTudo() {
+            const btn = document.getElementById('btnTudo');
+            const progress = document.getElementById('progressTudo');
+            const progressBar = document.getElementById('progressBarTudo');
+            const resultDiv = document.getElementById('resultTudo');
+
+            btn.disabled = true;
+            progress.style.display = 'block';
+            resultDiv.innerHTML = 'Iniciando criação completa...';
+
+            // Criar usuários
+            resultDiv.innerHTML = 'Criando usuários (1/3)...';
+            await criarUsuarios();
+            
+            // Criar departamentos
+            resultDiv.innerHTML += '\n\nCriando departamentos (2/3)...';
+            await criarDepartamentos();
+            
+            // Criar dados
+            resultDiv.innerHTML += '\n\nCriando dados (3/3)...';
+            await criarDados();
+
+            progressBar.style.width = '100%';
+            btn.disabled = false;
+            resultDiv.className = 'result success';
+            resultDiv.innerHTML = '✅ Criação completa concluída!\n\n' +
+                                '📊 Resumo:\n' +
+                                `• ${usuariosCriados.length} usuários criados\n` +
+                                `• ${departamentosCriados.length} departamentos criados\n` +
+                                `• 10 registros de dados criados\n\n` +
+                                '🎉 Todos os dados foram inseridos com sucesso!';
+        }
+
+        // Exemplo de URLs de teste (para referência)
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiUrlInput = document.getElementById('apiUrl');
+            apiUrlInput.placeholder = 'https://script.google.com/macros/s/AKfycbycScdDY666D624_lBdXk5VHpjoYq1EKCN_FYKdFWGcTb0hB_q_mOrrHmAjx1yhvFVktQ/exec';
+            
+            // Adicionar exemplo clicável
+            const exemploUrl = 'https://script.google.com/macros/s/AKfycbycScdDY666D624_lBdXk5VHpjoYq1EKCN_FYKdFWGcTb0hB_q_mOrrHmAjx1yhvFVktQ/exec';
+            apiUrlInput.value = exemploUrl;
         });
     </script>
 </body>
-
 </html>

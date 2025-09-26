@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindTrack - Minha Jornada</title>
+    <title>MindTrack - Login</title>
+    <script src="config.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,80 +17,15 @@
     <style>
         :root {
             --bg-main: #F9FAFB;
-            --bg-widget: #FFFFFF;
             --primary-gradient: linear-gradient(180deg, #2EC4B6 0%, #018B8B 100%);
             --primary-accent: #2EC4B6;
-            --secondary-accent: #8E7AB5;
+            --primary-accent-light: #E0F2F1;
             --text-dark: #374151;
             --text-light: #F9FAFB;
             --text-muted: #9CA3AF;
             --border-color: #E5E7EB;
-            --color-positive: #34D399;
-            --color-neutral: #FBBF24;
-            --color-negative: #FB923C;
             --font-title: 'Montserrat', sans-serif;
             --font-body: 'Inter', sans-serif;
-            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes growPlant {
-            from {
-                transform: scale(0);
-                opacity: 0;
-            }
-
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes bounce {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-8px);
-            }
-        }
-
-        /* Animações específicas do formulário */
-        @keyframes scaleUp {
-            from {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
         }
 
         * {
@@ -102,503 +38,258 @@
             font-family: var(--font-body);
             background-color: var(--bg-main);
             color: var(--text-dark);
-            display: flex;
             height: 100vh;
             overflow: hidden;
+            display: flex;
         }
 
-        .sidebar {
-            width: 260px;
+        .login-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .login-branding {
+            flex-basis: 45%;
             background: var(--primary-gradient);
             color: var(--text-light);
-            padding: 32px 24px;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid var(--border-color);
-        }
-
-        .main-content {
-            flex-grow: 1;
+            align-items: center;
+            justify-content: center;
             padding: 40px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             text-align: center;
         }
 
-        .sidebar-header {
+        .logo {
             font-family: var(--font-title);
-            font-size: 26px;
+            font-size: 36px;
             font-weight: 700;
-            margin-bottom: 48px;
             display: flex;
             align-items: center;
-            gap: 12px;
-        }
-
-        .sidebar-header i {
-            transform: scale(1.1);
-        }
-
-        .sidebar-nav ul {
-            list-style: none;
-        }
-
-        .sidebar-nav li {
-            margin-bottom: 8px;
-        }
-
-        .sidebar-nav a {
-            color: rgba(255, 255, 255, 0.85);
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: 500;
-            padding: 14px 18px;
-            display: flex;
-            align-items: center;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .sidebar-nav a i {
-            width: 22px;
-            margin-right: 16px;
-            text-align: center;
-            font-size: 1.1em;
-        }
-
-        .sidebar-nav a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
-        .sidebar-nav a.active {
-            background-color: #fff;
-            color: var(--primary-accent);
-            font-weight: 600;
-            box-shadow: var(--shadow-soft);
-        }
-
-        .user-profile {
-            margin-top: auto;
-            padding-top: 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .user-profile p:first-child {
-            font-weight: 600;
-        }
-
-        .user-profile p:last-child {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        /* --- ESTILOS ESPECÍFICOS DA JORNADA --- */
-        .jornada-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .plant-container {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            margin-bottom: 40px;
-        }
-
-        .plant-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            animation: growPlant 1s ease-out forwards;
-        }
-
-        .status-message {
-            font-family: var(--font-title);
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary-accent);
-            margin-bottom: 12px;
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .status-description {
-            font-size: 16px;
-            color: var(--text-muted);
-            margin-bottom: 40px;
-            max-width: 400px;
-            animation: fadeInUp 0.6s ease-out 0.2s;
-        }
-
-        .checkin-btn {
-            padding: 16px 32px;
-            font-family: var(--font-title);
-            font-size: 18px;
-            font-weight: 700;
-            border: none;
-            border-radius: 50px;
-            background: var(--primary-gradient);
-            color: #fff;
-            cursor: pointer;
-            box-shadow: var(--shadow-medium);
-            transition: all 0.3s ease;
-            animation: fadeInUp 0.6s ease-out 0.4s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .checkin-btn i {
-            animation: bounce 1.5s infinite;
-        }
-
-        /* --- ESTILOS DO MODAL E DO FORMULÁRIO DE CHECK-IN --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(17, 24, 39, 0.6);
-            backdrop-filter: blur(4px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0s 0.3s;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-            transition: opacity 0.3s ease;
-        }
-
-        .checkin-container {
-            background-color: var(--bg-widget);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: var(--shadow-medium);
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-            transform: scale(0.95);
-            transition: transform 0.3s ease;
-        }
-
-        .modal-overlay.active .checkin-container {
-            transform: scale(1);
-        }
-
-        .checkin-header {
+            gap: 16px;
             margin-bottom: 32px;
         }
 
-        .checkin-header h1 {
+        .login-branding h1 {
             font-family: var(--font-title);
             font-size: 28px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 16px;
+            max-width: 400px;
+        }
+
+        .login-branding p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 400px;
+        }
+
+        .login-form-area {
+            flex-basis: 55%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-card h2 {
+            font-family: var(--font-title);
+            font-size: 32px;
             font-weight: 700;
             margin-bottom: 8px;
         }
 
-        .checkin-header p {
+        .login-card .subtitle {
             font-size: 16px;
             color: var(--text-muted);
-        }
-
-        .question-group {
             margin-bottom: 40px;
-            opacity: 0;
-            display: none;
         }
 
-        .question-group.active {
-            display: block;
-            opacity: 1;
-            animation: scaleUp 0.5s ease-out forwards;
-        }
-
-        .question-group h2 {
-            font-family: var(--font-title);
-            font-size: 22px;
+        .form-group {
             margin-bottom: 24px;
         }
 
-        .answer-options {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
         }
 
-        .answer-option {
-            font-size: 48px;
-            cursor: pointer;
-            transition: transform 0.2s ease, filter 0.2s ease;
-            filter: grayscale(100%);
-            opacity: 0.6;
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
         }
 
-        .answer-option:hover,
-        .answer-option.selected {
-            transform: scale(1.1);
-            filter: grayscale(0);
-            opacity: 1;
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px var(--primary-accent-light);
         }
 
-        .answer-option:nth-child(1) {
-            color: #8B5CF6;
-        }
-
-        .answer-option:nth-child(2) {
-            color: #F87171;
-        }
-
-        .answer-option:nth-child(3) {
-            color: #FBBF24;
-        }
-
-        .answer-option:nth-child(4) {
-            color: #34D399;
-        }
-
-        .answer-option:nth-child(5) {
-            color: #2EC4B6;
-        }
-
-        .form-nav {
+        .form-options {
             display: flex;
             justify-content: space-between;
-            margin-top: 40px;
+            align-items: center;
+            margin-bottom: 32px;
         }
 
-        .btn {
-            padding: 12px 24px;
-            font-family: var(--font-body);
+        .form-options .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .form-options a,
+        .signup-link a {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-accent);
+            text-decoration: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
             font-size: 16px;
             font-weight: 600;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-secondary {
-            background-color: #fff;
-            border: 1px solid var(--border-color);
-            color: var(--text-dark);
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--border-color);
-        }
-
-        .btn-primary {
             background-color: var(--primary-accent);
             color: #fff;
         }
 
-        .btn-primary:hover {
-            background-color: #28a79b;
+        .btn-submit:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
         }
 
-        #final-message {
-            display: none;
-        }
-
-        #final-message .icon {
-            font-size: 60px;
-            color: var(--color-positive);
-            margin-bottom: 16px;
-        }
-
-        #final-message h2 {
-            font-family: var(--font-title);
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        #final-message p {
-            font-size: 16px;
+        .signup-link {
+            text-align: center;
+            margin-top: 32px;
+            font-size: 14px;
             color: var(--text-muted);
-            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .login-branding {
+                display: none;
+            }
+
+            .login-form-area {
+                flex-basis: 100%;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div id="sidebar-placeholder"></div>
-
-    <main class="main-content">
-        <div class="jornada-container">
-            <div class="plant-container">
-                <img src="https://www.shutterstock.com/image-vector/3d-pink-cherry-blossom-flower-260nw-2535780687.jpg"
-                    alt="Planta da Jornada de Bem-Estar" class="plant-image">
+    <div class="login-container">
+        <div class="login-branding">
+            <div class="logo">
+                <i class="fa-solid fa-leaf"></i>
+                <span>MindTrack</span>
             </div>
-            <h1 class="status-message">Seu jardim está florescendo!</h1>
-            <p class="status-description">Ótimo trabalho! A consistência de seus check-ins tem feito sua planta crescer
-                e prosperar. Continue assim!</p>
-            <button id="open-checkin-btn" class="checkin-btn">
-                <i class="fa-solid fa-pen-to-square"></i> Check-in do Dia
-            </button>
+            <h1>Cuide do seu bem-estar, um dia de cada vez.</h1>
+            <p>Conecte-se com suas emoções e cultive uma mente mais saudável e produtiva no seu ambiente de trabalho.
+            </p>
         </div>
-    </main>
 
-    <div id="checkin-modal" class="modal-overlay">
-        <div class="checkin-container">
-            <div class="checkin-header">
-                <h1>Check-in do Dia</h1>
-                <p>Seu jardim agradece por você se conectar consigo mesmo(a).</p>
-            </div>
+        <div class="login-form-area">
+            <div class="login-card">
+                <h2>Bem-vindo(a) de volta!</h2>
+                <p class="subtitle">Acesse sua conta para continuar sua jornada.</p>
 
-            <div id="checkin-form">
-                <div class="question-group active" data-step="1">
-                    <h2>Como está seu humor hoje?</h2>
-                    <div class="answer-options">
-                        <span class="answer-option" data-value="1">😔</span>
-                        <span class="answer-option" data-value="2">🙁</span>
-                        <span class="answer-option" data-value="3">😐</span>
-                        <span class="answer-option" data-value="4">😊</span>
-                        <span class="answer-option" data-value="5">🤩</span>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="seu.email@empresa.com" required>
                     </div>
-                </div>
 
-                <div class="question-group" data-step="2">
-                    <h2>Qual a sua energia?</h2>
-                    <div class="answer-options">
-                        <span class="answer-option" data-value="1">😴</span>
-                        <span class="answer-option" data-value="2">🥱</span>
-                        <span class="answer-option" data-value="3">💪</span>
-                        <span class="answer-option" data-value="4">⚡</span>
-                        <span class="answer-option" data-value="5">🚀</span>
+                    <div class="form-group">
+                        <label for="password">Senha</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
                     </div>
-                </div>
 
-                <div class="question-group" data-step="3">
-                    <h2>Como você avalia seu sono?</h2>
-                    <div class="answer-options">
-                        <span class="answer-option" data-value="1">😩</span>
-                        <span class="answer-option" data-value="2">😔</span>
-                        <span class="answer-option" data-value="3">😐</span>
-                        <span class="answer-option" data-value="4">🙂</span>
-                        <span class="answer-option" data-value="5">😇</span>
+                    <div class="form-options">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="remember-me">
+                            <label for="remember-me">Lembrar de mim</label>
+                        </div>
+                        <a href="#">Esqueci minha senha</a>
                     </div>
-                </div>
 
-                <div class="form-nav">
-                    <button id="prev-btn" class="btn btn-secondary" style="visibility: hidden;"><i
-                            class="fa-solid fa-arrow-left"></i> Voltar</button>
-                    <button id="next-btn" class="btn btn-primary" disabled>Próximo <i
-                            class="fa-solid fa-arrow-right"></i></button>
-                </div>
-            </div>
+                    <button type="submit" class="btn-submit">Entrar</button>
+                </form>
 
-            <div id="final-message">
-                <div class="icon"><i class="fa-solid fa-seedling"></i></div>
-                <h2>Check-in Concluído!</h2>
-                <p>Sua planta ganhou mais uma gota de orvalho. Volte amanhã para cuidar dela!</p>
-                <a href="./Jornada.html" class="btn btn-primary">Voltar para o Jardim</a>
+                <p class="signup-link">
+                    Ainda não tem uma conta? <a href="./Cadastro.html">Cadastre-se</a>
+                </p>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const openModalBtn = document.getElementById('open-checkin-btn');
-            const modal = document.getElementById('checkin-modal');
-            const form = document.getElementById('checkin-form');
-            const questions = document.querySelectorAll('.question-group');
-            const nextBtn = document.getElementById('next-btn');
-            const prevBtn = document.getElementById('prev-btn');
-            const finalMessage = document.getElementById('final-message');
+        const loginForm = document.getElementById('login-form');
+        const submitButton = loginForm.querySelector('.btn-submit');
 
-            let currentStep = 1;
-            const totalSteps = questions.length;
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-            // Função para atualizar a visibilidade do modal
-            function toggleModal(show) {
-                if (show) {
-                    modal.classList.add('active');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Verificando...';
+
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('password').value;
+
+            // Constrói a URL para a requisição GET, como definido no seu Code.gs
+            const requestUrl = `${API_URL}?action=login&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`;
+
+            try {
+                const response = await fetch(requestUrl);
+                const result = await response.json();
+
+                if (result.success && result.data) {
+
+                    // --- ALTERAÇÃO PRINCIPAL AQUI ---
+
+                    // 1. Salva o UserID_Anonimo como um "token" para ser usado em outras páginas.
+                    localStorage.setItem('mindtrackToken', result.data.UserID_Anonimo);
+
+                    // 2. (Opcional, mas recomendado) Salva o objeto completo do usuário para não precisar
+                    // buscar novamente dados como nome, cargo, etc., na próxima página.
+                    localStorage.setItem('mindtrackUser', JSON.stringify(result.data));
+
+                    alert('Login realizado com sucesso!');
+
+                    // 3. Redireciona para a página principal após o sucesso
+                    window.location.href = './Jornada.html';
+
                 } else {
-                    modal.classList.remove('active');
-                    resetForm();
+                    // Se o login falhar, mostra o erro retornado pela API
+                    throw new Error(result.error || 'Email ou senha incorretos.');
                 }
+
+            } catch (error) {
+                alert('Erro ao fazer login: ' + error.message);
+                submitButton.disabled = false;
+                submitButton.textContent = 'Entrar';
             }
-
-            // Função para resetar o formulário
-            function resetForm() {
-                currentStep = 1;
-                form.style.display = 'block';
-                finalMessage.style.display = 'none';
-                updateUI();
-            }
-
-            // Lógica do formulário de múltiplos passos
-            function updateUI() {
-                questions.forEach(q => q.classList.remove('active'));
-                document.querySelector(`.question-group[data-step="${currentStep}"]`).classList.add('active');
-
-                prevBtn.style.visibility = currentStep > 1 ? 'visible' : 'hidden';
-                nextBtn.textContent = currentStep === totalSteps ? 'Finalizar' : 'Próximo';
-                nextBtn.disabled = true;
-
-                const currentOptions = document.querySelectorAll(`.question-group.active .answer-option`);
-                currentOptions.forEach(opt => {
-                    opt.classList.remove('selected');
-                    opt.onclick = () => {
-                        currentOptions.forEach(o => o.classList.remove('selected'));
-                        opt.classList.add('selected');
-                        nextBtn.disabled = false;
-                    };
-                });
-            }
-
-            // Eventos de click
-            openModalBtn.addEventListener('click', () => {
-                toggleModal(true);
-            });
-
-            modal.addEventListener('click', (event) => {
-                if (event.target === modal) {
-                    toggleModal(false);
-                }
-            });
-
-            nextBtn.addEventListener('click', () => {
-                if (currentStep < totalSteps) {
-                    currentStep++;
-                    updateUI();
-                } else {
-                    form.style.display = 'none';
-                    finalMessage.style.display = 'block';
-                }
-            });
-
-            prevBtn.addEventListener('click', () => {
-                if (currentStep > 1) {
-                    currentStep--;
-                    updateUI();
-                }
-            });
-
-            // Configuração inicial
-            updateUI();
         });
     </script>
-    <script src="sidebar.js"></script>
+
 </body>
 
 </html>
