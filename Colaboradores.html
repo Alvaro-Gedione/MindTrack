@@ -11,8 +11,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script src="config.js"></script>
 
     <style>
         /* --- 1. CONFIGURAÇÕES GLOBAIS E NOVA PALETA DE CORES --- */
@@ -377,145 +378,161 @@
         <header class="page-header">
             <div>
                 <h1>Gestão de Acessos</h1>
-                <p style="font-size: 16px; color: var(--text-muted);">Gerencie departamentos e códigos de acesso
-                    anônimos.</p>
+                <p style="font-size: 16px; color: var(--text-muted);">Gerencie departamentos e colaboradores.</p>
             </div>
             <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Adicionar Departamento</button>
         </header>
 
-        <div class="department-grid">
-            <div class="department-card widget" style="animation-delay: 0.1s;">
-                <div class="card-header">
-                    <div>
-                        <div class="title">Departamento de Vendas</div>
-                        <p class="label">25 Colaboradores Ativos</p>
-                    </div>
-                    <i class="icon fa-solid fa-bullseye"></i>
-                </div>
-                <div class="card-stats">
-                    <div class="stat">
-                        <div class="value" style="color: var(--color-positive);">95%</div>
-                        <div class="label">Taxa de Adoção</div>
-                    </div>
-                </div>
-                <div class="card-actions">
-                    <button class="btn btn-secondary">Ver Relatório</button>
-                    <button class="btn btn-primary" id="openSalesModalBtn">Gerenciar Acessos</button>
-                </div>
-            </div>
-
-            <div class="department-card widget" style="animation-delay: 0.2s;">
-                <div class="card-header">
-                    <div>
-                        <div class="title">Departamento de TI</div>
-                        <p class="label">18 Colaboradores Ativos</p>
-                    </div>
-                    <i class="icon fa-solid fa-laptop-code"></i>
-                </div>
-                <div class="card-stats">
-                    <div class="value" style="color: var(--color-positive);">100%</div>
-                    <div class="label">Taxa de Adoção</div>
-                </div>
-                <div class="card-actions">
-                    <button class="btn btn-secondary">Ver Relatório</button>
-                    <button class="btn btn-primary">Gerenciar Acessos</button>
-                </div>
-            </div>
-
-            <div class="department-card widget" style="animation-delay: 0.3s;">
-                <div class="card-header">
-                    <div>
-                        <div class="title">Departamento de Marketing</div>
-                        <p class="label">12 Colaboradores Ativos</p>
-                    </div>
-                    <i class="icon fa-solid fa-lightbulb"></i>
-                </div>
-                <div class="card-stats">
-                    <div class="value" style="color: var(--color-neutral);">80%</div>
-                    <div class="label">Taxa de Adoção</div>
-                </div>
-                <div class="card-actions">
-                    <button class="btn btn-secondary">Ver Relatório</button>
-                    <button class="btn btn-primary">Gerenciar Acessos</button>
-                </div>
-            </div>
+        <div class="department-grid" id="department-grid-container">
+            <p>Carregando departamentos...</p>
         </div>
     </main>
 
-    <div class="modal-overlay" id="salesModal">
+    <div class="modal-overlay" id="access-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Acessos - Depto. de Vendas</h2>
-                <button class="modal-close-btn" id="closeSalesModalBtn"><i class="fa-solid fa-xmark"></i></button>
+                <h2 id="modal-title">Acessos - Carregando...</h2>
+                <button class="modal-close-btn" id="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div style="margin-bottom: 24px;">
-                <button class="btn btn-primary"><i class="fa-solid fa-key"></i> Gerar Novo Código de Acesso</button>
+                <button class="btn btn-primary"><i class="fa-solid fa-key"></i> Gerar Novo Código</button>
             </div>
             <table class="access-codes-table">
                 <thead>
                     <tr>
-                        <th>Código de Acesso</th>
+                        <th>Nome do Colaborador</th>
+                        <th>Email</th>
+                        <th>UserID Anônimo</th>
                         <th>Status</th>
-                        <th>Data de Criação</th>
-                        <th>Ação</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>MIND-TRK-SLS-8A4B</td>
-                        <td><span class="status-badge status-badge--active">Ativo</span></td>
-                        <td>15/07/2025</td>
-                        <td><button class="btn btn-secondary" style="color: var(--color-negative);">Desativar</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>MIND-TRK-SLS-9C2D</td>
-                        <td><span class="status-badge status-badge--active">Ativo</span></td>
-                        <td>15/07/2025</td>
-                        <td><button class="btn btn-secondary" style="color: var(--color-negative);">Desativar</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>MIND-TRK-SLS-E7F1</td>
-                        <td><span class="status-badge status-badge--pending">Pendente</span></td>
-                        <td>01/09/2025</td>
-                        <td><button class="btn btn-secondary" style="color: var(--color-negative);">Desativar</button>
-                        </td>
-                    </tr>
+                <tbody id="modal-table-body">
                 </tbody>
             </table>
         </div>
     </div>
 
-    <script>
-        // Seleciona os elementos do DOM
-        const salesModal = document.getElementById('salesModal');
-        const openBtn = document.getElementById('openSalesModalBtn');
-        const closeBtn = document.getElementById('closeSalesModalBtn');
-
-        // Função para abrir o modal
-        const openModal = () => {
-            salesModal.style.display = 'flex';
-        };
-
-        // Função para fechar o modal
-        const closeModal = () => {
-            salesModal.style.display = 'none';
-        };
-
-        // Adiciona os "escutadores" de eventos
-        openBtn.addEventListener('click', openModal);
-        closeBtn.addEventListener('click', closeModal);
-
-        // Fecha o modal se o usuário clicar na área escura (fora do conteúdo)
-        window.addEventListener('click', (event) => {
-            if (event.target === salesModal) {
-                closeModal();
-            }
-        });
-    </script>
     <script src="sidebar.js"></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const gridContainer = document.getElementById('department-grid-container');
+            const modal = document.getElementById('access-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalTableBody = document.getElementById('modal-table-body');
+            const closeModalBtn = document.getElementById('modal-close-btn');
+
+            let allUsers = []; // Cache para armazenar todos os usuários e evitar múltiplas chamadas
+
+            // --- FUNÇÃO PARA BUSCAR TODOS OS USUÁRIOS (CACHE) ---
+            async function fetchAllUsers() {
+                if (allUsers.length > 0) return allUsers; // Retorna do cache se já tiver
+                try {
+                    const response = await fetch(`${API_URL}?action=getUsuarios`);
+                    const result = await response.json();
+                    if (result.success) {
+                        allUsers = result.data;
+                        return allUsers;
+                    }
+                    return [];
+                } catch (error) {
+                    console.error("Erro ao buscar todos os usuários:", error);
+                    return [];
+                }
+            }
+
+            // --- FUNÇÃO PARA ABRIR E POPULAR O MODAL ---
+            async function openAccessModal(department) {
+                modalTitle.textContent = `Acessos - ${department.Departamento}`;
+                modalTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center;">Buscando colaboradores...</td></tr>`;
+                modal.style.display = 'flex';
+
+                // Filtra os usuários que pertencem a este departamento
+                const departmentUsers = allUsers.filter(user => department.ID_Usuarios.includes(user.UserID_Anonimo));
+
+                modalTableBody.innerHTML = ''; // Limpa a tabela
+                if (departmentUsers.length > 0) {
+                    departmentUsers.forEach(user => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${user.Nome}</td>
+                            <td>${user.Email}</td>
+                            <td>${user.UserID_Anonimo}</td>
+                            <td><span class="status-badge status-badge--active">Ativo</span></td>
+                        `;
+                        modalTableBody.appendChild(row);
+                    });
+                } else {
+                    modalTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center;">Nenhum colaborador encontrado neste departamento.</td></tr>`;
+                }
+            }
+
+            // --- FUNÇÃO PARA FECHAR O MODAL ---
+            const closeModal = () => modal.style.display = 'none';
+            closeModalBtn.addEventListener('click', closeModal);
+            window.addEventListener('click', (event) => {
+                if (event.target === modal) closeModal();
+            });
+
+
+            // --- FUNÇÃO PRINCIPAL PARA BUSCAR E RENDERIZAR OS DEPARTAMENTOS ---
+            async function renderDepartments() {
+                gridContainer.innerHTML = '<p>Carregando departamentos...</p>';
+                await fetchAllUsers(); // Pré-carrega todos os usuários no cache
+
+                try {
+                    const response = await fetch(`${API_URL}?action=getAllDepartamentos`);
+                    const result = await response.json();
+
+                    if (!result.success || !result.data || result.data.length === 0) {
+                        gridContainer.innerHTML = '<p>Nenhum departamento encontrado.</p>';
+                        return;
+                    }
+
+                    gridContainer.innerHTML = ''; // Limpa o container
+                    result.data.forEach((dept, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'department-card widget';
+                        card.style.animationDelay = `${(index + 1) * 0.1}s`;
+
+                        card.innerHTML = `
+                            <div class="card-header">
+                                <div>
+                                    <div class="title">${dept.Departamento}</div>
+                                    <p class="label">${dept.count_usuarios} Colaboradores Ativos</p>
+                                </div>
+                                <i class="icon fa-solid fa-building-user"></i>
+                            </div>
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="value" style="color: var(--color-positive);">100%</div>
+                                    <div class="label">Taxa de Adoção</div>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn btn-secondary">Ver Relatório</button>
+                                <button class="btn btn-primary btn-manage-access">Gerenciar Acessos</button>
+                            </div>
+                        `;
+
+                        // Adiciona o evento de clique no botão "Gerenciar Acessos"
+                        card.querySelector('.btn-manage-access').addEventListener('click', () => {
+                            openAccessModal(dept);
+                        });
+
+                        gridContainer.appendChild(card);
+                    });
+
+                } catch (error) {
+                    console.error("Erro ao renderizar departamentos:", error);
+                    gridContainer.innerHTML = '<p style="color: red;">Ocorreu um erro ao carregar os dados.</p>';
+                }
+            }
+
+            // Inicia o processo
+            renderDepartments();
+        });
+    </script>
 </body>
 
 </html>
