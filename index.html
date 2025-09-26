@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MindTrack - Login</title>
-
+    
     <script src="config.js"></script>
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -194,48 +193,10 @@
                 flex-basis: 100%;
             }
         }
-
-        .mqtt-test-panel {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            border: 1px solid var(--border-color);
-        }
-
-        .mqtt-test-panel p {
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        .mqtt-test-panel button {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: none;
-            background-color: var(--primary-accent);
-            color: white;
-            cursor: pointer;
-        }
-
-        .mqtt-test-panel button:disabled {
-            background-color: #ccc;
-        }
-
-        .mqtt-test-panel #mqtt-status {
-            font-weight: bold;
-        }
     </style>
 </head>
 
 <body>
-    <div class="mqtt-test-panel">
-        <p>Status MQTT: <span id="mqtt-status">Desconectado</span></p>
-        <button id="send-signal-btn" disabled>Enviar Sinal de Teste</button>
-    </div>
     <div class="login-container">
         <div class="login-branding">
             <div class="logo">
@@ -280,6 +241,7 @@
             </div>
         </div>
     </div>
+
     <script>
         const loginForm = document.getElementById('login-form');
         const submitButton = loginForm.querySelector('.btn-submit');
@@ -326,63 +288,6 @@
                 submitButton.disabled = false;
                 submitButton.textContent = 'Entrar';
             }
-        });
-        // =======================================================
-        // CORREÇÃO: Envolver a lógica MQTT no DOMContentLoaded
-        // =======================================================
-        document.addEventListener('DOMContentLoaded', function () {
-            const mqttStatus = document.getElementById('mqtt-status');
-            const sendSignalBtn = document.getElementById('send-signal-btn');
-
-            const brokerUrl = 'wss://broker.hivemq.com:8884/mqtt';
-            const topic = 'mindtrack/test/sinal';
-
-            const client = mqtt.connect(brokerUrl);
-
-            client.on('connect', () => {
-                console.log('Conectado ao broker MQTT!');
-                mqttStatus.textContent = 'Conectado!';
-                mqttStatus.style.color = 'green';
-                sendSignalBtn.disabled = false;
-            });
-
-            client.on('error', (err) => {
-                console.error('Erro de conexão MQTT:', err);
-                mqttStatus.textContent = 'Erro!';
-                mqttStatus.style.color = 'red';
-                client.end();
-            });
-
-            sendSignalBtn.addEventListener('click', () => {
-                // 1. GERAR UM SINAL NUMÉRICO (ex: uma onda senoidal simples)
-                const signalData = [];
-                const frequency = 2; // 2 Hz
-                const samples = 100; // 100 pontos de dados
-                for (let i = 0; i < samples; i++) {
-                    const time = i / samples;
-                    const value = Math.sin(2 * Math.PI * frequency * time);
-                    signalData.push(value); // Adiciona o valor numérico ao array
-                }
-
-                // 2. FORMATAR O SINAL COMO UMA STRING JSON
-                // Criamos um objeto para dar mais contexto à mensagem
-                const messageObject = {
-                    type: 'telecom_signal',
-                    timestamp: new Date().toISOString(),
-                    payload: signalData // Nosso array de números
-                };
-                const messageString = JSON.stringify(messageObject);
-
-                // 3. PUBLICAR A STRING JSON
-                client.publish(topic, messageString, (err) => {
-                    if (err) {
-                        console.error('Falha ao publicar o sinal:', err);
-                    } else {
-                        console.log(`Sinal numérico com ${signalData.length} amostras foi enviado!`);
-                        alert(`Sinal numérico com ${signalData.length} amostras foi enviado!`);
-                    }
-                });
-            });
         });
     </script>
 

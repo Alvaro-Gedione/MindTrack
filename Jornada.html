@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MindTrack - Minha Jornada</title>
 
+    <script src="config.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -449,8 +451,7 @@
                     alt="Planta da Jornada de Bem-Estar" class="plant-image">
             </div>
             <h1 class="status-message">Seu jardim está florescendo!</h1>
-            <p class="status-description">Ótimo trabalho! A consistência de seus check-ins tem feito sua planta crescer
-                e prosperar. Continue assim!</p>
+            <p class="status-description">Ótimo trabalho! A consistência de seus check-ins tem feito sua planta crescer e prosperar. Continue assim!</p>
             <button id="open-checkin-btn" class="checkin-btn">
                 <i class="fa-solid fa-pen-to-square"></i> Check-in do Dia
             </button>
@@ -527,8 +528,10 @@
 
             let currentStep = 1;
             const totalSteps = questions.length;
+            
+            // NOVO: Objeto para armazenar as respostas do usuário
+            let userAnswers = {};
 
-            // Função para atualizar a visibilidade do modal
             function toggleModal(show) {
                 if (show) {
                     modal.classList.add('active');
@@ -537,53 +540,123 @@
                     resetForm();
                 }
             }
-
-            // Função para resetar o formulário
+            
             function resetForm() {
                 currentStep = 1;
                 form.style.display = 'block';
                 finalMessage.style.display = 'none';
+                userAnswers = {}; // Limpa as respostas anteriores
                 updateUI();
             }
 
-            // Lógica do formulário de múltiplos passos
             function updateUI() {
                 questions.forEach(q => q.classList.remove('active'));
                 document.querySelector(`.question-group[data-step="${currentStep}"]`).classList.add('active');
 
                 prevBtn.style.visibility = currentStep > 1 ? 'visible' : 'hidden';
-                nextBtn.textContent = currentStep === totalSteps ? 'Finalizar' : 'Próximo';
+                nextBtn.innerHTML = currentStep === totalSteps ? 'Finalizar <i class="fa-solid fa-paper-plane"></i>' : 'Próximo <i class="fa-solid fa-arrow-right"></i>';
                 nextBtn.disabled = true;
 
                 const currentOptions = document.querySelectorAll(`.question-group.active .answer-option`);
                 currentOptions.forEach(opt => {
-                    opt.classList.remove('selected');
+                    
+                    if (userAnswers[currentStep] && userAnswers[currentStep] == opt.dataset.value) {
+                         opt.classList.add('selected');
+                         nextBtn.disabled = false;
+                    } else {
+                         opt.classList.remove('selected');
+                    }
+
                     opt.onclick = () => {
                         currentOptions.forEach(o => o.classList.remove('selected'));
                         opt.classList.add('selected');
                         nextBtn.disabled = false;
+                        
+                        // Armazena a resposta numericamente
+                        userAnswers[currentStep] = parseInt(opt.dataset.value, 10);
                     };
                 });
             }
 
-            // Eventos de click
-            openModalBtn.addEventListener('click', () => {
-                toggleModal(true);
-            });
+            // =========================================================================
+            //  NOVO: Função para enviar os dados para a API
+            // =========================================================================
+            async function submitCheckinData() {
+                // 1. Coletar o ID do usuário do localStorage
+                const userId = localStorage.getItem('mindtrackToken');
+                if (!userId) {
+                    alert('Erro: Usuário não autenticado. Por favor, faça login novamente.');
+                    window.location.href = './index.html';
+                    return false; // Indica falha
+                }
 
+                // 2. Mapear as respostas para os campos da API
+                const humorValue = userAnswers[1];
+                const energiaValue = userAnswers[2];
+                const sonoValue = userAnswers[3];
+
+                // Mapeamento inverso para o estresse: 5 (ótimo humor) -> 1 (baixo estresse)
+                const estresseValue = 6 - humorValue;
+
+                // 3. Montar o payload para a API
+                const payload = {
+                    action: "postDados",
+                    data: {
+                        UserID_Anonimo: userId,
+                        Qualidade_Sono: sonoValue,
+                        Nivel_Estresse: estresseValue,
+                        Nivel_Energia: energiaValue
+                    }
+                };
+
+                // 4. Enviar para a API
+                try {
+                    await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload),
+                        mode: 'no-cors' // Essencial para Google Apps Script
+                    });
+                    
+                    console.log('Dados de check-in enviados com sucesso:', payload.data);
+                    return true; // Indica sucesso
+                } catch (error) {
+                    console.error('Erro de rede ao enviar check-in:', error);
+                    alert('Não foi possível registrar seu check-in. Verifique sua conexão com a internet.');
+                    return false; // Indica falha
+                }
+            }
+            
+            // Eventos de clique
+            openModalBtn.addEventListener('click', () => toggleModal(true));
             modal.addEventListener('click', (event) => {
                 if (event.target === modal) {
                     toggleModal(false);
                 }
             });
 
-            nextBtn.addEventListener('click', () => {
+            // MODIFICADO: Evento de clique para o botão Próximo/Finalizar
+            nextBtn.addEventListener('click', async () => {
                 if (currentStep < totalSteps) {
                     currentStep++;
                     updateUI();
                 } else {
-                    form.style.display = 'none';
-                    finalMessage.style.display = 'block';
+                    // Lógica de finalização e envio dos dados
+                    nextBtn.disabled = true;
+                    nextBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+
+                    const success = await submitCheckinData();
+
+                    if (success) {
+                        form.style.display = 'none';
+                        finalMessage.style.display = 'block';
+                    } else {
+                        // Reabilita o botão em caso de erro
+                        nextBtn.disabled = false;
+                        updateUI(); // Reseta o texto do botão para "Finalizar"
+                    }
                 }
             });
 

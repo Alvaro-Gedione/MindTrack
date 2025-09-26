@@ -5,9 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MindTrack - Relatórios Detalhados</title>
-    <script src="config.js"></script>
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -199,7 +196,6 @@
             padding: 28px;
             border-radius: 20px;
             box-shadow: var(--shadow-soft);
-            margin-bottom: 32px; /* Adicionado espaço entre widgets */
         }
 
         .widget-title {
@@ -383,14 +379,49 @@
             border-top: 1px solid var(--border-color);
         }
 
-        #mqtt-receiver-status {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #E0F2F1;
-            border-left: 4px solid var(--primary-accent);
-            border-radius: 4px;
+        .alerts-widget {
+            grid-column: span 2;
+        }
+
+        .alerts-list {
+            list-style: none;
+        }
+
+        .alerts-list li {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .alerts-list li:last-child {
+            border-bottom: none;
+        }
+
+        .alert-icon {
+            margin-right: 16px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .alert-icon.negative {
+            color: var(--color-negative);
+        }
+
+        .alert-icon.positive {
+            color: var(--color-positive);
+        }
+
+        .alert-text {
+            flex-grow: 1;
+        }
+
+        .alert-time {
             font-size: 14px;
-            color: #333;
+            color: var(--text-muted);
+            white-space: nowrap;
+            margin-left: 16px;
         }
     </style>
 </head>
@@ -402,14 +433,7 @@
         <header class="page-header">
             <h1>Relatórios Detalhados</h1>
             <p>Filtre e analise os dados de bem-estar para tomar decisões estratégicas.</p>
-            <div id="mqtt-receiver-status">Aguardando sinal MQTT...</div>
         </header>
-
-        <div class="widget" id="mqtt-chart-widget" style="display: none;">
-             <h3 class="widget-title" id="mqtt-chart-title">Teste de Transmissão de Sinal por MQTT</h3>
-             <canvas id="mqttSignalChart"></canvas>
-        </div>
-
 
         <div class="report-generator">
             <div class="filter-group">
@@ -515,134 +539,6 @@
 
     </main>
     <script src="sidebar.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // =======================================================
-            // 3. LÓGICA DO GRÁFICO E DO MQTT
-            // =======================================================
-            const receiverStatus = document.getElementById('mqtt-receiver-status');
-            const chartWidget = document.getElementById('mqtt-chart-widget');
-            const chartTitle = document.getElementById('mqtt-chart-title');
-            const ctx = document.getElementById('mqttSignalChart').getContext('2d');
-            
-            let signalChart; // Variável para guardar a instância do gráfico
-
-            // Função para iniciar o gráfico com dados vazios
-            function initializeChart() {
-                signalChart = new Chart(ctx, {
-                    type: 'line', // Tipo de gráfico
-                    data: {
-                        labels: [], // Eixo X (amostras)
-                        datasets: [{
-                            label: 'Amplitude do Sinal',
-                            data: [], // Eixo Y (valores do sinal)
-                            borderColor: 'var(--primary-accent)',
-                            backgroundColor: 'rgba(46, 196, 182, 0.2)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        scales: {
-                            y: {
-                                beginAtZero: false,
-                                title: {
-                                    display: true,
-                                    text: 'Amplitude'
-                                }
-                            },
-                             x: {
-                                title: {
-                                    display: true,
-                                    text: 'Amostras'
-                                }
-                            }
-                        },
-                        animation: {
-                            duration: 500 // Animação mais suave
-                        }
-                    }
-                });
-            }
-
-            // Função para atualizar o gráfico com novos dados
-            function updateChart(signalData, timestamp) {
-                 if (!signalChart) return;
-                 
-                 // Cria as legendas do eixo X (ex: 0, 1, 2, ...)
-                 const labels = Array.from({ length: signalData.length }, (_, i) => i);
-
-                 signalChart.data.labels = labels;
-                 signalChart.data.datasets[0].data = signalData;
-                 signalChart.update(); // Redesenha o gráfico com os novos dados
-                 
-                 // Mostra o widget do gráfico e atualiza o título
-                 chartWidget.style.display = 'block';
-                 chartTitle.textContent = `Sinal Recebido às ${new Date(timestamp).toLocaleTimeString()}`;
-            }
-            
-            // --- Lógica MQTT ---
-            const brokerUrl = 'wss://broker.hivemq.com:8884/mqtt';
-            const topic = 'mindtrack/test/sinal';
-
-            const client = mqtt.connect(brokerUrl);
-
-            client.on('connect', () => {
-                console.log('Conectado ao broker MQTT!');
-                client.subscribe(topic, (err) => {
-                    if (!err) {
-                        console.log(`Inscrito no tópico "${topic}" com sucesso!`);
-                        receiverStatus.textContent = 'Conectado e aguardando mensagens...';
-                        receiverStatus.style.borderColor = 'green';
-                        initializeChart(); // Inicia o gráfico após conectar
-                    } else {
-                        console.error('Erro ao se inscrever:', err);
-                        receiverStatus.textContent = 'Erro ao se inscrever no tópico.';
-                        receiverStatus.style.borderColor = 'red';
-                    }
-                });
-            });
-
-            client.on('message', (receivedTopic, message) => {
-                const messageString = message.toString();
-                console.log(`Mensagem bruta recebida: ${messageString}`);
-
-                try {
-                    const data = JSON.parse(messageString);
-
-                    if (data.type === 'telecom_signal' && Array.isArray(data.payload)) {
-                        const receivedSignal = data.payload;
-                        console.log('Sinal numérico decodificado com sucesso:', receivedSignal);
-
-                        // Atualiza o status visual
-                        receiverStatus.innerHTML = `<strong>Último Sinal Numérico Recebido!</strong><br>
-                        Timestamp: ${new Date(data.timestamp).toLocaleString()}<br>
-                        Número de amostras: ${receivedSignal.length}`;
-                        
-                        // ATUALIZA O GRÁFICO!
-                        updateChart(receivedSignal, data.timestamp);
-
-                    } else {
-                        receiverStatus.innerHTML = `<strong>Mensagem JSON recebida:</strong><br>${messageString}`;
-                    }
-
-                } catch (e) {
-                    console.log('Recebida mensagem de texto simples.');
-                    receiverStatus.innerHTML = `<strong>Mensagem de Texto Recebida:</strong><br>${messageString}`;
-                }
-            });
-
-            client.on('error', (err) => {
-                console.error('Erro de conexão MQTT:', err);
-                receiverStatus.textContent = 'Erro de conexão MQTT!';
-                receiverStatus.style.borderColor = 'red';
-                client.end();
-            });
-        });
-    </script>
 </body>
 
 </html>
