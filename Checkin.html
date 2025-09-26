@@ -42,7 +42,7 @@
                 opacity: 1;
             }
         }
-        
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -54,12 +54,13 @@
                 transform: translateY(0);
             }
         }
-        
+
         @keyframes scaleUp {
             from {
                 transform: scale(0.8);
                 opacity: 0;
             }
+
             to {
                 transform: scale(1);
                 opacity: 1;
@@ -98,14 +99,14 @@
             margin-bottom: 32px;
             animation: fadeInUp 0.6s ease-out 0.2s;
         }
-        
+
         .checkin-header h1 {
             font-family: var(--font-title);
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 8px;
         }
-        
+
         .checkin-header p {
             font-size: 16px;
             color: var(--text-muted);
@@ -127,13 +128,13 @@
             font-size: 22px;
             margin-bottom: 24px;
         }
-        
+
         .answer-options {
             display: flex;
             justify-content: center;
             gap: 20px;
         }
-        
+
         .answer-option {
             font-size: 48px;
             cursor: pointer;
@@ -143,24 +144,44 @@
             animation: fadeInUp 0.5s ease-out;
         }
 
-        .answer-option:hover, .answer-option.selected {
+        .answer-option:hover,
+        .answer-option.selected {
             transform: scale(1.1);
             filter: grayscale(0);
             opacity: 1;
         }
 
-        .answer-option:nth-child(1) { color: #8B5CF6; animation-delay: 0.1s; }
-        .answer-option:nth-child(2) { color: #F87171; animation-delay: 0.2s; }
-        .answer-option:nth-child(3) { color: #FBBF24; animation-delay: 0.3s; }
-        .answer-option:nth-child(4) { color: #34D399; animation-delay: 0.4s; }
-        .answer-option:nth-child(5) { color: #2EC4B6; animation-delay: 0.5s; }
+        .answer-option:nth-child(1) {
+            color: #8B5CF6;
+            animation-delay: 0.1s;
+        }
+
+        .answer-option:nth-child(2) {
+            color: #F87171;
+            animation-delay: 0.2s;
+        }
+
+        .answer-option:nth-child(3) {
+            color: #FBBF24;
+            animation-delay: 0.3s;
+        }
+
+        .answer-option:nth-child(4) {
+            color: #34D399;
+            animation-delay: 0.4s;
+        }
+
+        .answer-option:nth-child(5) {
+            color: #2EC4B6;
+            animation-delay: 0.5s;
+        }
 
         .form-nav {
             display: flex;
             justify-content: space-between;
             margin-top: 40px;
         }
-        
+
         .btn {
             padding: 12px 24px;
             font-family: var(--font-body);
@@ -180,7 +201,7 @@
             border: 1px solid var(--border-color);
             color: var(--text-dark);
         }
-        
+
         .btn-secondary:hover {
             background-color: var(--border-color);
         }
@@ -193,23 +214,23 @@
         .btn-primary:hover {
             background-color: #28a79b;
         }
-        
+
         #final-message {
             display: none;
         }
-        
+
         #final-message .icon {
             font-size: 60px;
             color: var(--color-positive);
             margin-bottom: 16px;
         }
-        
+
         #final-message h2 {
             font-family: var(--font-title);
             font-size: 24px;
             margin-bottom: 8px;
         }
-        
+
         #final-message p {
             font-size: 16px;
             color: var(--text-muted);
@@ -262,10 +283,12 @@
             </div>
 
             <div class="form-nav">
-                <button id="prev-btn" class="btn btn-secondary" style="visibility: hidden;"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-                <button id="next-btn" class="btn btn-primary" disabled>Próximo <i class="fa-solid fa-arrow-right"></i></button>
+                <button id="prev-btn" class="btn btn-secondary" style="visibility: hidden;"><i
+                        class="fa-solid fa-arrow-left"></i> Voltar</button>
+                <button id="next-btn" class="btn btn-primary" disabled>Próximo <i
+                        class="fa-solid fa-arrow-right"></i></button>
             </div>
-            
+
         </div>
 
         <div id="final-message" class="widget">
@@ -275,14 +298,14 @@
             <a href="./Jornada.html" class="btn btn-primary">Voltar para o Jardim</a>
         </div>
     </div>
-    
+
     <script>
         const form = document.getElementById('checkin-form');
         const questions = document.querySelectorAll('.question-group');
         const nextBtn = document.getElementById('next-btn');
         const prevBtn = document.getElementById('prev-btn');
         const finalMessage = document.getElementById('final-message');
-        
+
         let currentStep = 1;
         const totalSteps = questions.length;
 
@@ -293,7 +316,7 @@
             prevBtn.style.visibility = currentStep > 1 ? 'visible' : 'hidden';
             nextBtn.textContent = currentStep === totalSteps ? 'Finalizar' : 'Próximo';
             nextBtn.disabled = true; // Desabilita até uma nova opção ser selecionada
-            
+
             // Re-bind click listeners for the new active question
             const currentOptions = document.querySelectorAll(`.question-group.active .answer-option`);
             currentOptions.forEach(opt => {
@@ -322,7 +345,7 @@
                 updateUI();
             }
         };
-        
+
         // Initial setup
         updateUI();
 
