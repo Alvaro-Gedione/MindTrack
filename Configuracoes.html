@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+    <script src="config.js"></script>
     <style>
         /* --- 1. CONFIGURAÇÕES GLOBAIS E PALETA DE CORES --- */
         :root {
@@ -135,6 +136,54 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-main);
+        }
+
+        /* Layout para a aba de perfil */
+        .profile-layout {
+            display: flex;
+            align-items: flex-start;
+            gap: 32px;
+        }
+
+        .profile-pic-section {
+            flex-shrink: 0;
+            text-align: center;
+            width: 150px;
+            /* Largura fixa para a coluna da foto */
+        }
+
+        .profile-pic-section .profile-picture-preview {
+            margin: 8px auto 16px;
+            /* Centraliza a pré-visualização da imagem */
+        }
+
+        .profile-pic-section small {
+            font-size: 12px;
+        }
+
+        .profile-details-section {
+            flex-grow: 1;
+            /* Ocupa o espaço restante */
+        }
+
+        .profile-picture-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            margin-bottom: 16px;
+            background-size: cover;
+            background-position: center;
+            display: inline-block;
+        }
 
         /* --- 4. ESTILOS DO CONTEÚDO PRINCIPAL --- */
         .page-header {
@@ -174,6 +223,11 @@
 
         .btn-primary:hover {
             background-color: #28a79b;
+        }
+
+        .btn-primary:disabled {
+            background-color: var(--text-muted);
+            cursor: not-allowed;
         }
 
         .btn-danger-outline {
@@ -519,21 +573,41 @@
                     <div class="settings-card">
                         <div class="settings-card-header">
                             <h3>Informações Pessoais</h3>
-                            <p>Estes dados são visíveis apenas para você.</p>
+                            <p>Estes dados são visíveis apenas para você e seus gestores.</p>
                         </div>
-                        <form>
-                            <div class="settings-card-body">
-                                <div class="form-group">
-                                    <label for="user-name">Nome Completo</label>
-                                    <input type="text" id="user-name" value="Anastácia Disney">
+                        <form id="profile-form">
+                            <div class="settings-card-body profile-layout">
+
+                                <div class="profile-pic-section">
+                                    <label>Foto de Perfil</label>
+                                    <div id="profile-pic-preview" class="profile-picture-preview"></div>
+                                    <input type="file" id="user-avatar" accept="image/png, image/jpeg"
+                                        style="display: none;">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="document.getElementById('user-avatar').click();">
+                                        <i class="fa-solid fa-camera"></i> Alterar
+                                    </button>
+                                    <small style="display: block; margin-top: 8px; color: var(--text-muted);">
+                                        Clique para enviar uma nova foto.
+                                    </small>
                                 </div>
-                                <div class="form-group">
-                                    <label for="user-role">Seu Cargo</label>
-                                    <input type="text" id="user-role" value="Analista de Vendas">
+
+                                <div class="profile-details-section">
+                                    <div class="form-group">
+                                        <label for="user-name">Nome Completo</label>
+                                        <input type="text" id="user-name" value="Carregando...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="user-role">Seu Cargo</label>
+                                        <input type="text" id="user-role" value="Carregando...">
+                                    </div>
                                 </div>
+
                             </div>
                             <div class="settings-card-footer">
-                                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                                <button type="submit" id="save-profile-btn" class="btn btn-primary">
+                                    <i class="fa-solid fa-save"></i> Salvar Alterações
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -596,15 +670,15 @@
                             <h3>Segurança</h3>
                             <p>Altere sua senha para manter sua conta segura.</p>
                         </div>
-                        <form>
+                        <form id="password-form">
                             <div class="settings-card-body">
                                 <div class="form-group">
                                     <label for="current-password">Senha Atual</label>
-                                    <input type="password" id="current-password" placeholder="••••••••">
+                                    <input type="password" id="current-password" placeholder="••••••••" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="new-password">Nova Senha</label>
-                                    <input type="password" id="new-password" placeholder="••••••••">
+                                    <input type="password" id="new-password" placeholder="Mínimo 8 caracteres" required>
                                 </div>
                             </div>
                             <div class="settings-card-footer">
@@ -728,39 +802,201 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Seleciona todos os links da navegação de configurações
-            const navLinks = document.querySelectorAll('.settings-nav a');
-            // Seleciona todos os painéis de conteúdo
+            // Lógica para alternar abas (combinando navegação principal e links de dropdown)
+            const navLinks = document.querySelectorAll('.settings-nav a[data-target]');
             const tabContents = document.querySelectorAll('.settings-tab-content');
 
-            // Adiciona um evento de clique a cada link da navegação
             navLinks.forEach(link => {
                 link.addEventListener('click', function (event) {
-                    // Impede o comportamento padrão do link (de navegar para "#")
                     event.preventDefault();
 
-                    // Pega o ID do conteúdo alvo do atributo 'data-target' do link clicado
                     const targetId = this.getAttribute('data-target');
                     const targetContent = document.getElementById(targetId);
 
-                    // 1. Remove a classe 'active' de todos os links
-                    navLinks.forEach(navLink => {
-                        navLink.classList.remove('active');
-                    });
+                    // Remove 'active' de todos os links e conteúdos de navegação
+                    document.querySelectorAll('.settings-nav a').forEach(l => l.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
 
-                    // 2. Adiciona a classe 'active' apenas ao link que foi clicado
+                    // Adiciona 'active' ao link clicado e ao seu conteúdo
                     this.classList.add('active');
-
-                    // 3. Esconde todos os painéis de conteúdo
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                    });
-
-                    // 4. Mostra apenas o painel de conteúdo correspondente ao link clicado
                     if (targetContent) {
                         targetContent.classList.add('active');
                     }
+
+                    // Se o link clicado está dentro de um dropdown, mantém o toggle "ativo"
+                    const parentDropdown = this.closest('.nav-item-dropdown');
+                    if (parentDropdown) {
+                        parentDropdown.querySelector('.dropdown-toggle').classList.add('active');
+                    }
                 });
+            });
+
+
+
+            // --- INÍCIO DO CÓDIGO DE PERFIL E SEGURANÇA ---
+
+            const userId = localStorage.getItem('mindtrackToken');
+            if (!userId) {
+                window.location.href = './index.html';
+                return;
+            }
+
+            const userNameInput = document.getElementById('user-name');
+            const userRoleInput = document.getElementById('user-role');
+            const profilePicPreview = document.getElementById('profile-pic-preview');
+            const fileInput = document.getElementById('user-avatar');
+
+            // Carrega os dados do usuário ao abrir a página
+            async function loadUserData() {
+                // Pega do localStorage primeiro para uma carga rápida
+                const localUser = JSON.parse(localStorage.getItem('mindtrackUser'));
+                if (localUser) {
+                    userNameInput.value = localUser.Nome;
+                    userRoleInput.value = localUser.Cargo;
+                    if (localUser.Profile_Pic_ID) {
+                        profilePicPreview.style.backgroundImage = `url(https://drive.google.com/thumbnail?id=${localUser.Profile_Pic_ID}&sz=w200)`;
+                    }
+                }
+
+                // Busca dados atualizados da API
+                try {
+                    const response = await fetch(`${API_URL}?action=getUserData&userId=${userId}`);
+                    const result = await response.json();
+                    if (result.success) {
+                        const user = result.data;
+                        userNameInput.value = user.Nome;
+                        userRoleInput.value = user.Cargo;
+                        if (user.Profile_Pic_ID) {
+                            profilePicPreview.style.backgroundImage = `url(https://drive.google.com/thumbnail?id=${user.Profile_Pic_ID}&sz=w200)`;
+                        }
+                        // Atualiza o localStorage com os dados mais recentes
+                        localStorage.setItem('mindtrackUser', JSON.stringify(user));
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar dados do usuário:', error);
+                }
+            }
+
+            loadUserData();
+
+            // Preview da imagem ao selecionar
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length > 0) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profilePicPreview.style.backgroundImage = `url(${e.target.result})`;
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
+            });
+
+
+            // Lógica para salvar perfil
+            const profileForm = document.getElementById('profile-form');
+            profileForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const saveButton = document.getElementById('save-profile-btn');
+                saveButton.disabled = true;
+                saveButton.textContent = 'Salvando...';
+
+                // 1. Salvar Nome e Cargo
+                try {
+                    const profilePayload = {
+                        action: "updateUserProfile",
+                        data: {
+                            userId: userId,
+                            nome: userNameInput.value,
+                            cargo: userRoleInput.value
+                        }
+                    };
+                    // Usamos 'no-cors' aqui, então não podemos ler a resposta diretamente.
+                    await fetch(API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(profilePayload),
+                        mode: 'no-cors'
+                    });
+
+                } catch (error) {
+                    alert('Erro ao salvar nome e cargo.');
+                }
+
+
+                // 2. Fazer upload da foto, se houver uma nova
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const reader = new FileReader();
+                    reader.onload = async (event) => {
+                        const base64Data = event.target.result.split(',')[1];
+                        const mimeType = file.type;
+
+                        const uploadPayload = {
+                            action: "uploadFile",
+                            data: {
+                                userId: userId,
+                                fileName: file.name,
+                                mimeType: mimeType,
+                                base64Data: base64Data
+                            }
+                        };
+                        try {
+                            await fetch(API_URL, {
+                                method: 'POST',
+                                body: JSON.stringify(uploadPayload),
+                                mode: 'no-cors'
+                            });
+                        } catch (error) {
+                            console.error('Erro no upload:', error);
+                            alert('Ocorreu um erro ao enviar sua foto.');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+
+                alert('Perfil atualizado! As alterações podem levar um momento para serem refletidas em toda a plataforma.');
+                setTimeout(() => {
+                    saveButton.disabled = false;
+                    saveButton.textContent = 'Salvar Alterações';
+                    // Recarrega os dados para garantir que a sidebar também será atualizada
+                    loadUserData();
+                }, 1500);
+            });
+
+            // Lógica para alterar senha
+            const passwordForm = document.getElementById('password-form');
+            passwordForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+
+                const payload = {
+                    action: "updatePassword",
+                    data: {
+                        userId: userId,
+                        currentPassword: currentPassword,
+                        newPassword: newPassword
+                    }
+                };
+
+                try {
+                    // Para esta chamada, precisamos ler a resposta para saber se foi sucesso ou erro.
+                    // Portanto, não usamos 'no-cors'. O script precisa estar configurado para permitir isso.
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(payload),
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Google Apps Script prefere text/plain
+                        redirect: 'follow'
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        alert(result.message || 'Senha alterada com sucesso!');
+                        passwordForm.reset();
+                    } else {
+                        alert(`Erro: ${result.error}`);
+                    }
+                } catch (error) {
+                    alert('Ocorreu um erro de comunicação ao tentar alterar a senha.');
+                    console.error("Erro ao alterar senha:", error);
+                }
             });
         });
     </script>

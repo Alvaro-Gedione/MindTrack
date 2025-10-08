@@ -79,6 +79,13 @@ const sidebarCSS = `
         flex-shrink: 0; 
     }
 
+    .profile-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
     .profile-text p { margin: 0; font-size: 14px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
     .profile-text p:first-child { font-weight: 600; color: #fff; }
     .profile-text p:last-child { font-size: 12px; color: rgba(255, 255, 255, 0.7); }
@@ -168,7 +175,8 @@ const sidebarHTML = `
         </div>
 
         <div class="user-profile">
-            <div id="user-profile-avatar" class="profile-avatar">?</div>
+             <div id="user-profile-avatar" class="profile-avatar">
+                </div>
             <div class="profile-text">
                 <p id="user-profile-name">Carregando...</p>
                 <p id="user-profile-role">...</p>
@@ -199,8 +207,6 @@ function getInitials(name) {
  */
 function updateUserProfile() {
     const userDataString = localStorage.getItem('mindtrackUser');
-
-    // Se não encontrar dados do usuário, redireciona para o login
     if (!userDataString) {
         console.error('Usuário não autenticado. Redirecionando para login.');
         window.location.href = './index.html';
@@ -209,22 +215,27 @@ function updateUserProfile() {
 
     try {
         const user = JSON.parse(userDataString);
-
-        // Seleciona os elementos do perfil pelos IDs
-        const avatar = document.getElementById('user-profile-avatar');
+        const avatarContainer = document.getElementById('user-profile-avatar');
         const userName = document.getElementById('user-profile-name');
         const userRole = document.getElementById('user-profile-role');
 
-        // ---- CORREÇÃO APLICADA AQUI ----
-        // Atualiza os elementos com os dados do usuário, usando as chaves corretas (Nome, Cargo)
-        if (avatar) avatar.textContent = getInitials(user.Nome);
         if (userName) userName.textContent = user.Nome || 'Usuário Anônimo';
         if (userRole) userRole.textContent = user.Cargo || 'Cargo não definido';
 
+        // Lógica para exibir a imagem de perfil
+        if (avatarContainer) {
+            if (user.Profile_Pic_ID) {
+                // Se tiver um ID de foto, cria a URL do thumbnail do Google Drive e insere a imagem
+                const thumbnailUrl = `https://drive.google.com/thumbnail?id=${user.Profile_Pic_ID}&sz=w200`;
+                avatarContainer.innerHTML = `<img src="${thumbnailUrl}" alt="Foto de Perfil">`;
+            } else {
+                // Se não tiver, exibe as iniciais
+                avatarContainer.textContent = getInitials(user.Nome);
+            }
+        }
     } catch (error) {
-        console.error('Erro ao processar dados do usuário. Redirecionando para login.', error);
-        // Limpa dados corrompidos e redireciona
-        localStorage.removeItem('mindtrackUser');
+        console.error('Erro ao processar dados do usuário:', error);
+        localStorage.clear();
         window.location.href = './index.html';
     }
 }
