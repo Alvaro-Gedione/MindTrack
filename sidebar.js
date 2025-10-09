@@ -1,7 +1,7 @@
 // sidebar.js
 
 // =================================================================================
-// 1. CSS PARA A SIDEBAR (sem alterações)
+// 1. CSS PARA A SIDEBAR (com alterações na logo)
 // =================================================================================
 const sidebarCSS = `
     /* Garante que a sidebar ocupe 100% da altura */
@@ -25,6 +25,29 @@ const sidebarCSS = `
         align-items: center;
         gap: 12px;
     }
+    
+    /* ================================================== */
+    /* NOVO: Estilos para criar o círculo branco da logo  */
+    /* ================================================== */
+    .logo-wrapper {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #d6fafaff;
+        border: 2px solid #20978bff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-wrapper img {
+        width: 75%; /* Ajusta o tamanho da logo dentro do círculo */
+        height: 75%;
+        object-fit: contain; /* Garante que a logo não seja distorcida */
+    }
+    /* ================================================== */
     
     .sidebar-nav {
         flex-grow: 1;
@@ -121,13 +144,15 @@ const sidebarCSS = `
 `;
 
 // =================================================================================
-// 2. HTML DA SIDEBAR (sem alterações)
+// 2. HTML DA SIDEBAR (com a imagem da logo envolvida por um div)
 // =================================================================================
 const sidebarHTML = `
     <aside class="sidebar">
         <div class="sidebar-header">
             <div class="logo-container">
-                <i class="fa-solid fa-leaf"></i>
+                <div class="logo-wrapper">
+                    <img src="https://drive.google.com/thumbnail?id=1KrDrjtyBKJ3c4fNUVdXwCQg0jbJiA1uA&sz=w40" alt="Logo da MindTrack">
+                </div>
                 <span class="nav-text">MindTrack</span>
             </div>
             <button id="sidebar-toggle-btn" class="sidebar-toggle">
@@ -176,7 +201,7 @@ const sidebarHTML = `
 
         <div class="user-profile">
              <div id="user-profile-avatar" class="profile-avatar">
-                </div>
+                 </div>
             <div class="profile-text">
                 <p id="user-profile-name">Carregando...</p>
                 <p id="user-profile-role">...</p>
@@ -186,7 +211,7 @@ const sidebarHTML = `
 `;
 
 // =================================================================================
-// 3. FUNÇÕES JAVASCRIPT (COM LÓGICA DE USUÁRIO E LOGOUT)
+// 3. FUNÇÕES JAVASCRIPT (sem alterações)
 // =================================================================================
 
 /**
