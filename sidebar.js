@@ -3,13 +3,15 @@
 // =================================================================================
 // 1. CSS PARA A SIDEBAR (com alterações na logo)
 // =================================================================================
+
 const sidebarCSS = `
-    /* Garante que a sidebar ocupe 100% da altura */
     .sidebar {
         height: 100vh;
-        transition: width 0.3s ease; /* Animação suave da largura */
+        transition: width 0.3s ease;
         display: flex;
         flex-direction: column;
+        padding: 16px; 
+        box-sizing: border-box; /* Garante que o padding não aumente a largura total */
     }
 
     .sidebar-header {
@@ -18,17 +20,18 @@ const sidebarCSS = `
         justify-content: space-between;
         padding-bottom: 8px;
         flex-shrink: 0;
+        /* NOVO: Essencial para posicionar o botão de toggle */
+        position: relative; 
     }
 
     .logo-container {
         display: flex;
         align-items: center;
         gap: 12px;
+        /* NOVO: Ocupa todo o espaço para alinhar o texto */
+        flex-grow: 1; 
     }
     
-    /* ================================================== */
-    /* NOVO: Estilos para criar o círculo branco da logo  */
-    /* ================================================== */
     .logo-wrapper {
         width: 40px;
         height: 40px;
@@ -39,19 +42,25 @@ const sidebarCSS = `
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+        transition: all 0.3s ease; /* Animação para a borda */
+        position: relative; /* Contexto para o ícone */
     }
 
     .logo-wrapper img {
-        width: 75%; /* Ajusta o tamanho da logo dentro do círculo */
+        width: 75%;
         height: 75%;
-        object-fit: contain; /* Garante que a logo não seja distorcida */
+        object-fit: contain;
+        transition: opacity 0.3s ease; /* Animação para a imagem sumir */
     }
-    /* ================================================== */
     
     .sidebar-nav {
         flex-grow: 1;
-        overflow-y: auto; /* Permite rolagem se os menus forem grandes */
+        overflow-y: auto;
+        /* MODIFICADO: Usa margem negativa para "escapar" do padding da sidebar */
+        /* e padding interno para alinhar o conteúdo novamente. */
+        margin: 0 -12px; 
+        padding: 0 10px 0 16px;
     }
 
     /* Estilos para a barra de rolagem */
@@ -71,12 +80,16 @@ const sidebarCSS = `
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background-color 0.3s ease;
+        transition: all 0.3s ease;
+        /* NOVO: Posicionamento absoluto em relação ao .sidebar-header */
+        position: absolute;
+        right: 0; /* Alinha à direita do header */
+        top: 45%;
+        transform: translateY(-50%);
     }
 
     .sidebar-toggle:hover { background-color: rgba(255, 255, 255, 0.15); }
     
-    /* Estilos para o perfil de usuário */
     .user-profile {
         margin-top: 16px;
         padding-top: 16px;
@@ -113,7 +126,6 @@ const sidebarCSS = `
     .profile-text p:first-child { font-weight: 600; color: #fff; }
     .profile-text p:last-child { font-size: 12px; color: rgba(255, 255, 255, 0.7); }
 
-    /* Estilos para navegação e botão sair */
     .sidebar-footer { padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.2); flex-shrink: 0; }
     .sidebar-nav ul, .sidebar-footer ul { list-style: none; padding: 0; margin: 0; }
     .sidebar-nav a, .sidebar-footer a { color: rgba(255, 255, 255, 0.85); text-decoration: none; font-size: 16px; font-weight: 500; padding: 14px 18px; display: flex; align-items: center; border-radius: 10px; transition: all 0.3s ease; }
@@ -122,22 +134,70 @@ const sidebarCSS = `
     .sidebar-nav a.active { background-color: #fff; color: var(--primary-accent, #2EC4B6); font-weight: 600; }
     
     .nav-divider { height: 1px; background-color: rgba(255, 255, 255, 0.2); margin: 16px 0; }
-
-    /* Estilos para o menu dropdown (pasta) */
+    
     .dropdown-toggle { width: 100%; justify-content: space-between; }
     .dropdown-toggle .chevron-icon { margin-right: 0; transition: transform 0.3s ease; }
     .dropdown-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-in-out; padding-left: 20px; }
     .nav-item-dropdown.open > .dropdown-menu { max-height: 500px; }
     .nav-item-dropdown.open > .dropdown-toggle .chevron-icon { transform: rotate(180deg); }
     
-    /* Comportamento quando a sidebar está colapsada */
-    .sidebar.sidebar-collapsed { width: 90px; }
+    /* ========================================================================= */
+    /* Comportamento da Sidebar Colapsada (com modificações)
+    /* ========================================================================= */
+
+    .sidebar.sidebar-collapsed { 
+        width: 70px; 
+        padding: 16px 4px; /* Ajusta o padding lateral quando colapsada */
+    }
+
     .sidebar.sidebar-collapsed .nav-text,
-    .sidebar.sidebar-collapsed .sidebar-header .logo-container span,
+    .sidebar.sidebar-collapsed .logo-container > span, /* Alvo específico no span do logo */
     .sidebar.sidebar-collapsed .user-profile .profile-text,
-    .sidebar.sidebar-collapsed .nav-divider { display: none; }
-    .sidebar.sidebar-collapsed .sidebar-header, .sidebar.sidebar-collapsed .user-profile { justify-content: center; }
-    .sidebar.sidebar-collapsed .sidebar-nav a, .sidebar.sidebar-collapsed .sidebar-footer a { justify-content: center; padding-left: 0; padding-right: 0; }
+    .sidebar.sidebar-collapsed .nav-divider { 
+        display: none; 
+    }
+
+    /* NOVO: Esconde a imagem da logo ao colapsar */
+    .sidebar.sidebar-collapsed .logo-wrapper img {
+        opacity: 0.5;
+    }
+
+    /* NOVO: Aumenta a espessura da borda e adiciona um brilho */
+    .sidebar.sidebar-collapsed .logo-wrapper {
+        border-width: 4px;
+        box-shadow: 0 2 4px rgba(0, 0, 0, 1);
+    }
+    
+    /* MODIFICADO: Centraliza o botão toggle sobre o logo */
+    .sidebar.sidebar-collapsed .sidebar-toggle {
+        color: #20978bff;
+        left: 50%;
+        top: 45%;
+        transform: translate(-50%, -50%);
+        background-color: transparent; /* Garante que o fundo não cubra a borda */
+    }
+
+    /* MODIFICADO: Centraliza o logo e o perfil de usuário */
+    .sidebar.sidebar-collapsed .logo-container, 
+    .sidebar.sidebar-collapsed .user-profile {
+        justify-content: center;
+    }
+    .sidebar.sidebar-collapsed .sidebar-header {
+        justify-content: center;
+    }
+
+    /* MODIFICADO: Ajusta o espaçamento dos links de navegação */
+    .sidebar.sidebar-collapsed .sidebar-nav {
+        margin: 0;
+        padding: 0;
+    }
+    .sidebar.sidebar-collapsed .sidebar-nav a, 
+    .sidebar.sidebar-collapsed .sidebar-footer a { 
+        justify-content: center; 
+        padding-left: 0; 
+        padding-right: 0; 
+    }
+    
     .sidebar.sidebar-collapsed .dropdown-menu { max-height: 500px; overflow: visible; padding-left: 0; }
     .sidebar.sidebar-collapsed .chevron-icon { display: none !important; }
     .sidebar.sidebar-collapsed .sidebar-nav a i, .sidebar.sidebar-collapsed .sidebar-footer a i { margin-right: 0; }
@@ -154,10 +214,11 @@ const sidebarHTML = `
                     <img src="https://drive.google.com/thumbnail?id=1KrDrjtyBKJ3c4fNUVdXwCQg0jbJiA1uA&sz=w40" alt="Logo da MindTrack">
                 </div>
                 <span class="nav-text">MindTrack</span>
+                
+                <button id="sidebar-toggle-btn" class="sidebar-toggle">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
             </div>
-            <button id="sidebar-toggle-btn" class="sidebar-toggle">
-                <i class="fa-solid fa-chevron-left"></i>
-            </button>
         </div>
 
         <nav class="sidebar-nav">
